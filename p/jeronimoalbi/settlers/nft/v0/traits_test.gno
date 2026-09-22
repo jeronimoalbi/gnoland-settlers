@@ -95,10 +95,10 @@ func TestInvalidTraitsAreNotValid(t *testing.T) {
 	for _, tc := range invalidTraits {
 		t.Run(tc.name, func(t *testing.T) {
 			// Act
-			valid, err := tc.traits.Validate() == nil, tc.traits.Validate()
+			err := tc.traits.Validate()
 
 			// Assert
-			assert(t, !valid, "must not be valid")
+			assert(t, err != nil, "must not be valid")
 			assertErrorContains(t, err, tc.err)
 		})
 	}
@@ -160,7 +160,8 @@ func TestSeedRates(t *testing.T) {
 		}
 
 		// Assert
-		low, high := total*(tc.percent-3)/100, total*(tc.percent+3)/100
+		low := total * (tc.percent - 3) / 100
+		high := total * (tc.percent + 3) / 100
 		if count < low || count > high {
 			t.Fatalf("%s: got %d of %d, want %d%% plus or minus 3", tc.name, count, total, tc.percent)
 		}
@@ -252,7 +253,8 @@ func TestFlipChangesTheImageOnlyForABentTip(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		flipped, unflipped := tc.traits, tc.traits
+		flipped := tc.traits
+		unflipped := tc.traits
 		unflipped.Flip = 0
 
 		// Act
