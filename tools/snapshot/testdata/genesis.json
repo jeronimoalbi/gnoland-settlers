@@ -1,0 +1,16 @@
+{
+  "genesis_time": "2026-09-12T15:00:00Z",
+  "chain_id": "fixture",
+  "app_state": {
+    "balances": [
+      "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5=1000000000ugnot",
+      "g1wymu47drhr0kuq2098m792lytgtj2nyx77yrsm=250000000ugnot;vesting=240000000ugnot,1789225200,1852383600",
+      "g100000aeu2lh0jrrnmn2npc88typ25u7t7ejr8g=15000000ugnot",
+      "g1j0rwgzam8a30skv638y20mpkhwpwzsulnqfmvg=15000156ugnot",
+      "g1zzzunp8m6525h8na7spssnx9sqqq6dt2c5qwnu=9000000000ugnot",
+      "g1aeddlftlfk27ret5rf750d7w5dume3kcsm8r8m=1000000000ugnot",
+      "g172aaqt6g99t8u9dr90whfstrm9j6jdvjt6whh5=14999994ugnot",
+      "g1qqqpusmpej89a5rm4d6kc2l35u9r2ur0pa7adf=16ugnot;vesting=16ugnot,1789225200,1852383600"
+    ]
+  }
+}
