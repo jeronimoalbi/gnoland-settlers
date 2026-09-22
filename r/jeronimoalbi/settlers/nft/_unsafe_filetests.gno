@@ -1,0 +1,54 @@
+package nft
+
+import (
+	"chain/runtime"
+	"strconv"
+
+	"gno.land/p/nt/bptree/v0"
+	"gno.land/p/nt/ownable/v0"
+)
+
+// UnsafeReset clears the collection back to its just-deployed state and makes owner the admin.
+func UnsafeReset(cur realm, owner address) {
+	assertIsDevChain()
+
+	root = nil
+	total = 0
+	tokens = bptree.NewBPTree32()
+	claimed = bptree.NewBPTree32()
+	seen = newTraitsFilter()
+	supplyCap = capacity
+
+	Admin = ownable.NewWithAddress(owner)
+}
+
+// UnsafeSetCap lowers or raises the mint cap.
+func UnsafeSetCap(cur realm, n int) {
+	assertIsDevChain()
+	supplyCap = n
+}
+
+// UnsafeSeedFor generates a seed for a specific gnome.
+func UnsafeSeedFor(caller address, height int64, id, nonce int) string {
+	assertIsDevChain()
+	return generateSeed(caller, height, id, nonce)
+}
+
+// UnsafeMarkSeen marks packed traits as already minted, without minting them.
+func UnsafeMarkSeen(cur realm, packed uint32) {
+	assertIsDevChain()
+	seen.AddString(strconv.FormatUint(uint64(packed), 10))
+}
+
+// UnsafeSeenContains reports whether packed traits are marked as minted.
+func UnsafeSeenContains(packed uint32) bool {
+	assertIsDevChain()
+	return seen.ContainsString(strconv.FormatUint(uint64(packed), 10))
+}
+
+func assertIsDevChain() {
+	id := runtime.ChainID()
+	if id != "dev" && id != "tendermint_test" {
+		panic("unauthorized")
+	}
+}
