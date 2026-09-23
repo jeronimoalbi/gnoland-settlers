@@ -41,10 +41,10 @@ func main(cur realm) {
 			"## Last Settlers", "![Settler #2](data:image/svg+xml", "(/r/jeronimoalbi/settlers/nft:token/2)",
 		}},
 		{"token", "token/2", []string{
-			"# Settler #2", "data:image/svg+xml", "| Skin |", "| Background |", string(bob), "soulbound",
+			"# Settler #2", "data:image/svg+xml", "| Skin |", "| Background |", bob.String(), "soulbound",
 		}},
-		{"address with a token", "addr/" + string(alice), []string{"Settler #1", ":token/1"}},
-		{"address without a token", "addr/" + string(notEligible), []string{"has not minted"}},
+		{"address with a token", "addr/" + alice.String(), []string{"Settler #1", ":token/1"}},
+		{"address without a token", "addr/" + notEligible.String(), []string{"has not minted"}},
 		{"path not found", "foo/bar/baz", []string{"Path not found"}},
 	}
 

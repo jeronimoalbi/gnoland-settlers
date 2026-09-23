@@ -92,7 +92,7 @@ func renderToken(res *mux.ResponseWriter, req *mux.Request) {
 	t := TraitsOf(settlerID)
 	res.Write(image(title, t, detailWidth) + "\n\n")
 
-	owner := string(OwnerOf(settlerID))
+	owner := OwnerOf(settlerID).String()
 	res.Write(md.Paragraph(
 		"Owner: " + md.Link(owner, realmPath+":addr/"+owner) +
 			" · soulbound: it can't be transferred",

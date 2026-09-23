@@ -188,7 +188,7 @@ func OwnerOf(settlerID int) address { return tokenOf(settlerID).owner }
 
 // BalanceOf returns the number of Settlers of an account (0 or 1).
 func BalanceOf(addr address) int {
-	if claimed.Has(string(addr)) {
+	if claimed.Has(addr.String()) {
 		return 1
 	}
 	return 0
@@ -196,7 +196,7 @@ func BalanceOf(addr address) int {
 
 // TokenOf returns the ID of the Settler of an account, or 0 if it has none.
 func TokenOf(addr address) int {
-	v := claimed.Get(string(addr))
+	v := claimed.Get(addr.String())
 	if v == nil {
 		return 0
 	}
