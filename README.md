@@ -29,6 +29,12 @@ gnokey maketx call \
 
 Or mint from the browser: [jeronimoalbi.github.io/gnoland-settlers](https://jeronimoalbi.github.io/gnoland-settlers/)
 
+## Try it on a testnet first
+
+If you'd rather try minting without touching the real `gnoland-1` chain, there's a testnet version of the
+mint page at [jeronimoalbi.github.io/gnoland-settlers/testnet.html](https://jeronimoalbi.github.io/gnoland-settlers/testnet.html).
+It works exactly the same way, just on a chain made for testing.
+
 ## Use your Settler's image elsewhere
 
 Once minted, a separate [avatar](r/jeronimoalbi/settlers/avatar) realm can draw your Settler as a picture

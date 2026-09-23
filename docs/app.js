@@ -15,7 +15,6 @@
 // is put on the screen as plain text with `textContent`, never as HTML, so it cannot add elements or
 // scripts to the page.
 
-import { config } from "./config.js";
 import { avatarSVG, readCollection, tokenOf } from "./chain.js";
 import { buildTree, findIndex, gnokeyCommand, isAddress, mintURL, proofFor, realmPath, rootOf } from "./lib.js";
 
@@ -36,6 +35,7 @@ function setStatus(id, text, kind) {
 }
 
 // What the page knows once it is running.
+let config; // the settings this page uses (chain, node, realm), given to run()
 let collection = null; // the numbers read from the realm
 let addresses = []; // the sorted list of eligible addresses
 let tree = null; // the Merkle tree of that list
@@ -49,7 +49,7 @@ async function start() {
   say("realm-link", config.realm);
 
   try {
-    collection = await readCollection();
+    collection = await readCollection(config);
   } catch (error) {
     setStatus("list-status", "Could not read the realm: " + error.message, "error");
     return;
@@ -112,8 +112,8 @@ async function checkAccount(address) {
   setStatus("account-status", "Checking...", "neutral");
   let id;
   try {
-    id = await tokenOf(address);
-    collection = await readCollection(); // the numbers may have changed since the page was opened
+    id = await tokenOf(config, address);
+    collection = await readCollection(config); // the numbers may have changed since the page was opened
     showCollection();
   } catch (error) {
     setStatus("account-status", "Could not read the realm: " + error.message, "error");
@@ -169,7 +169,7 @@ function hideMintAndSettler() {
 /** Shows the picture of a Settler and a link to its page. */
 async function showSettler(address, id) {
   try {
-    const svg = await avatarSVG(address, 192);
+    const svg = await avatarSVG(config, address, 192);
     if (!svg) return;
     // An SVG shown through <img> is only a picture: a browser does not run scripts inside it.
     const url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
@@ -190,12 +190,17 @@ async function copy(id, button) {
   setTimeout(() => (button.textContent = label), 1500);
 }
 
-$("check").addEventListener("click", () => checkAccount($("address").value.trim()));
-$("address").addEventListener("keydown", (event) => {
-  if (event.key === "Enter") checkAccount($("address").value.trim());
-});
-$("recheck").addEventListener("click", () => checkAccount(account));
-$("copy-proof").addEventListener("click", (event) => copy("proof", event.target));
-$("copy-command").addEventListener("click", (event) => copy("command", event.target));
+/** Wires the page and starts it, using the given settings (chain, node, realm), see config.js. */
+export function run(activeConfig) {
+  config = activeConfig;
 
-start();
+  $("check").addEventListener("click", () => checkAccount($("address").value.trim()));
+  $("address").addEventListener("keydown", (event) => {
+    if (event.key === "Enter") checkAccount($("address").value.trim());
+  });
+  $("recheck").addEventListener("click", () => checkAccount(account));
+  $("copy-proof").addEventListener("click", (event) => copy("proof", event.target));
+  $("copy-command").addEventListener("click", (event) => copy("command", event.target));
+
+  start();
+}

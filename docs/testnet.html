@@ -6,22 +6,26 @@
     <!--
       The Content-Security-Policy is a rule that the browser enforces for this page. It says that the page can
       only run scripts and styles from its own folder, show images from memory (the picture of your Settler),
-      and talk to this site and to the public node of Gno.land, and nothing else. Even if a bug let some
+      and talk to this site and to the public node of the testnet, and nothing else. Even if a bug let some
       foreign text reach the page, the browser would not run it or send anything to another server.
     -->
     <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'none'; script-src 'self'; style-src 'self'; img-src blob:;
-               connect-src 'self' https://rpc.gno.land"
+               connect-src 'self' https://rpc.pearl.testnets.gno.land"
     />
-    <title>Settlers mint</title>
+    <title>Settlers mint (testnet)</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <main>
       <h1>Settlers</h1>
+      <p class="hint">
+        This is the testnet page: it mints on a chain made for testing, not the real Gno.land.
+        For the mainnet mint page, see <a href="index.html">jeronimoalbi.github.io/gnoland-settlers</a>.
+      </p>
       <p>
-        A gnome for the first people of <a href="https://gno.land">Gno.land</a>. Anyone who had at least
+        A gnome for the first people of <a href="https://pearl.testnets.gno.land">Gno.land</a>. Anyone who had at least
         <span id="min-gnot">15</span> GNOT in the launch balances of <code>gnoland-1</code> can mint one
         Settler, free of charge (you only pay the network fee). It cannot be transferred, it's soulbound,
         it stays with the account that minted it.
@@ -37,7 +41,7 @@
           <dt>Root of the list</dt>
           <dd id="root" class="mono">...</dd>
           <dt>Realm</dt>
-          <dd><a id="realm-link" href="https://gno.land" class="mono">...</a></dd>
+          <dd><a id="realm-link" href="https://pearl.testnets.gno.land" class="mono">...</a></dd>
         </dl>
       </section>
 
@@ -45,7 +49,7 @@
         <h2>1. The list of accounts</h2>
         <p class="hint">
           The page downloads the list of accounts that are allowed to mint, and checks it against what
-          Gno.land itself remembers. This takes a few seconds and needs nothing from you.
+          the realm itself remembers. This takes a few seconds and needs nothing from you.
         </p>
         <p id="list-status" class="status neutral" role="status">Loading...</p>
       </section>
@@ -67,14 +71,14 @@
       <section id="mint-section" hidden>
         <h2>3. Mint</h2>
         <p class="hint">
-          This is where you actually mint. Click "Mint on Gno.land" to open the realm's page with your proof
-          already filled in, and send the transaction from there with your own wallet. Your proof is shown
-          below too, it is safe to share since it only works for the account it was made for; if you would
-          rather use a terminal, "Mint with gnokey instead" has the exact command for it.
+          This is where you actually mint. Click "Mint" to open the realm's page with your proof already
+          filled in, and send the transaction from there with your own wallet. Your proof is shown below too,
+          it is safe to share since it only works for the account it was made for; if you would rather use a
+          terminal, "Mint with gnokey instead" has the exact command for it.
         </p>
         <p>
-          <a id="mint-link" href="https://gno.land" class="button" target="_blank" rel="noopener noreferrer"
-            >Mint on Gno.land</a
+          <a id="mint-link" href="https://pearl.testnets.gno.land" class="button" target="_blank" rel="noopener noreferrer"
+            >Mint</a
           >
         </p>
         <p>Your proof (it only works for your account, it is safe to show):</p>
@@ -91,16 +95,16 @@
       <section id="settler-section" hidden>
         <h2>Your Settler</h2>
         <p class="hint">
-          After you mint, on Gno.land or with gnokey, it can take a few seconds to be ready. Come back to this
-          page and press "Check again", no need to retype your address, to see the Settler that was drawn for
-          your account.
+          After you mint, on this testnet or with gnokey, it can take a few seconds to be ready. Come back to
+          this page and press "Check again", no need to retype your address, to see the Settler that was
+          drawn for your account.
         </p>
         <p><button id="recheck" type="button" class="secondary">Check again</button></p>
         <p id="settler-status" class="status neutral" role="status"></p>
         <img id="settler" alt="Your Settler" width="192" height="192" hidden />
-        <p><a id="settler-link" href="https://gno.land" hidden>See it on Gno.land</a></p>
+        <p><a id="settler-link" href="https://pearl.testnets.gno.land" hidden>See it on the testnet</a></p>
       </section>
     </main>
-    <script type="module" src="main.js"></script>
+    <script type="module" src="testnet-main.js"></script>
   </body>
 </html>

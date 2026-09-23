@@ -10,16 +10,16 @@
 //
 // Both are read-only: the node runs them on its current state and does not change anything.
 
-import { config } from "./config.js";
 import { isAddress, parseEval } from "./lib.js";
 
 /**
  * Sends one query to the node and returns the answer as text.
  *
+ * @param {object} config the page's settings (chain, node, realm), see config.js
  * @param {string} path the kind of query, "vm/qeval" or "vm/qrender"
  * @param {string} data what to ask, for example `gno.land/r/some/realm.MerkleRoot()`
  */
-async function query(path, data) {
+async function query(config, path, data) {
   const response = await fetch(config.rpc, {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -43,23 +43,24 @@ async function query(path, data) {
 }
 
 /** Runs an expression of the Settlers realm, like `Cap()`, and returns its value. */
-async function evaluate(expression) {
-  return parseEval(await query("vm/qeval", config.realm + "." + expression));
+async function evaluate(config, expression) {
+  return parseEval(await query(config, "vm/qeval", config.realm + "." + expression));
 }
 
 /**
  * Reads the numbers of the collection from the realm.
  *
+ * @param {object} config the page's settings (chain, node, realm), see config.js
  * @returns {Promise<{root: string, total: number, cap: number, minted: number}>}
  *   root: the Merkle root of the list of eligible addresses ("" until the realm is opened),
  *   total: how many addresses the list has, cap: how many Settlers can be minted, minted: how many were.
  */
-export async function readCollection() {
+export async function readCollection(config) {
   const [root, total, cap, minted] = await Promise.all([
-    evaluate("MerkleRoot()"),
-    evaluate("Total()"),
-    evaluate("Cap()"),
-    evaluate("TotalSupply()"),
+    evaluate(config, "MerkleRoot()"),
+    evaluate(config, "Total()"),
+    evaluate(config, "Cap()"),
+    evaluate(config, "TotalSupply()"),
   ]);
   return { root, total, cap, minted };
 }
@@ -68,16 +69,16 @@ export async function readCollection() {
  * The id of the Settler of an address, or 0 if it has none.
  * The address is checked first: it is put inside the question, so only a real address is allowed in it.
  */
-export async function tokenOf(address) {
+export async function tokenOf(config, address) {
   if (!isAddress(address)) throw new Error("not an address");
-  return evaluate(`TokenOf("${address}")`);
+  return evaluate(config, `TokenOf("${address}")`);
 }
 
 /**
  * The picture (SVG) of the Settler of an address, drawn by the avatar realm, as text.
  * The page shows it inside an <img>, where a browser never runs scripts, even if the image had any.
  */
-export async function avatarSVG(address, size) {
+export async function avatarSVG(config, address, size) {
   if (!isAddress(address)) throw new Error("not an address");
-  return query("vm/qrender", `${config.avatarRealm}:svg/${address}?size=${size}`);
+  return query(config, "vm/qrender", `${config.avatarRealm}:svg/${address}?size=${size}`);
 }

@@ -16,18 +16,17 @@ const defaults = {
   // The chain the Settlers realm lives on.
   chainId: "gnoland-1",
 
-  // A public node of the chain. The page only asks it questions ("read" calls). It never sends a
-  // transaction: minting itself always happens somewhere else, with your wallet of choice.
+  // A public node of the chain.
   rpc: "https://rpc.gno.land",
 
   // The website that shows realms in a readable form, used for the links of the page.
   gnoweb: "https://gno.land",
 
   // The realm that keeps the Settlers: it checks the proofs and mints the tokens.
-  realm: "gno.land/r/jeronimoalbi/settlers/nft",
+  realm: "gno.land/r/g17khqpukees4237dtn3astzapmp462vjhsz6st4/settlers/nft",
 
   // The realm that draws the picture of a Settler for an address.
-  avatarRealm: "gno.land/r/jeronimoalbi/settlers/avatar",
+  avatarRealm: "gno.land/r/g17khqpukees4237dtn3astzapmp462vjhsz6st4/settlers/avatar",
 
   // The list of eligible addresses, next to this page. It is the file that tools/snapshot/generate.py writes.
   // The page does not trust it: it checks it against the root that is stored in the realm.

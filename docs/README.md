@@ -24,9 +24,13 @@ It has no build step and no dependencies, the browser runs the files of this fol
 | `style.css` | The looks, with the colors and fonts of Gno.land, light and dark |
 | `config.js` | Chain, node, realm and the gnokey gas values: the production defaults |
 | `config.local.example.js` | Copy to `config.local.js` (gitignored) to override values for a local gnodev |
+| `config.testnet.js` | Chain, node, realm and gas values for `testnet.html`, the one file to edit for a different testnet |
 | `lib.js` | Merkle tree, proofs, address check, chain answers. No screen, network or wallet |
 | `chain.js` | Reads from the chain (`vm/qeval`, `vm/qrender`). Never writes |
-| `app.js` | The page: connects the others to the screen (text only, never HTML) |
+| `app.js` | The page: connects the others to the screen (text only, never HTML). Exports `run(config)` |
+| `main.js` | Starts `index.html` with `config.js` (production, `gnoland-1`) |
+| `testnet-main.js` | Starts `testnet.html` with `config.testnet.js` |
+| `testnet.html` | The same mint page, pointed at a testnet instead of `gnoland-1` |
 | `lib.test.mjs` | Tests of `lib.js` |
 | `snapshot.json` | The list of eligible addresses (not in git until publishing, see below) |
 
