@@ -1,0 +1,196 @@
+/*
+  style.css - the looks of the page. The colors, fonts and shapes follow the ones of gno.land so that the
+  page feels like part of it: Inter for the text, Roboto Mono for addresses and code, gray surfaces and the
+  green of the Gno.land brand. It has a light and a dark version, chosen by the setting of your system.
+  Nothing is loaded from other sites: if the fonts are not installed, the system fonts are used.
+*/
+
+:root {
+  --bg: #fff;
+  --surface: #f0f0f0;
+  --border: #bdbdbd;
+  --text: #1a1a1a;
+  --muted: #5f5f5f;
+  --brand: #226c57;
+  --brand-hover: #277b63;
+  --on-brand: #fff;
+  --danger: #b3261e;
+  --sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "Roboto Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e0e0e;
+    --surface: #141414;
+    --border: #3a3a3a;
+    --text: #e2e2e2;
+    --muted: #a0a0a0;
+    --brand: #60ab96;
+    --brand-hover: #79bfaa;
+    --on-brand: #0e0e0e;
+    --danger: #e5675c;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.6 var(--sans);
+}
+
+/* One column, with a gutter of 16px so that it also fits a phone. */
+main {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+h1 {
+  font-size: 2rem;
+  margin: 0 0 8px;
+}
+
+h2 {
+  font-size: 1.15rem;
+  margin: 0 0 8px;
+}
+
+section {
+  margin-top: 24px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+a {
+  color: var(--brand);
+}
+
+code,
+pre,
+.mono {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+}
+
+/* Long values (roots, proofs) break instead of making the page scroll sideways. */
+.mono,
+pre {
+  overflow-wrap: anywhere;
+}
+
+pre {
+  margin: 0;
+  padding: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  white-space: pre-wrap;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 16px;
+  margin: 0;
+}
+
+dt {
+  color: var(--muted);
+}
+
+/* Plain-language explanation of what a step does, ahead of its status/inputs. */
+.hint {
+  color: var(--muted);
+  margin-top: 0;
+}
+
+/* Dynamic status messages (role="status") stand out from static text: bold, colored by outcome. */
+.status {
+  font-weight: 600;
+}
+
+.status.neutral {
+  color: var(--muted);
+}
+
+.status.success {
+  color: var(--brand);
+}
+
+.status.error {
+  color: var(--danger);
+}
+
+dd {
+  margin: 0;
+}
+
+/* .button lets an <a> look like a button, for example the link to the realm's Mint page. */
+button,
+.button {
+  display: inline-block;
+  font: inherit;
+  padding: 8px 16px;
+  color: var(--on-brand);
+  background: var(--brand);
+  border: 1px solid var(--brand);
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+button:hover,
+.button:hover {
+  background: var(--brand-hover);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+button.secondary {
+  color: var(--text);
+  background: var(--bg);
+  border-color: var(--border);
+}
+
+input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+}
+
+/* Elements with the "hidden" attribute stay hidden even if a rule above sets their display. */
+[hidden] {
+  display: none !important;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+ul {
+  padding-left: 20px;
+}
