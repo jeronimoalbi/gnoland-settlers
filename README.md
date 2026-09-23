@@ -28,3 +28,11 @@ gnokey maketx call \
 ```
 
 Or mint from the browser: [jeronimoalbi.github.io/gnoland-settlers](https://jeronimoalbi.github.io/gnoland-settlers/)
+
+## Use your Settler's image elsewhere
+
+Once minted, a separate [avatar](r/jeronimoalbi/settlers/avatar) realm can draw your Settler as a picture
+(an image or Markdown) on request, for anyone to use. It's meant for other realms and web apps that want to
+show a Settler next to an address, a profile picture, a leaderboard row, a forum post, without needing to
+know anything about how the art works themselves. See its
+[README](r/jeronimoalbi/settlers/avatar/README.md) for the details.
