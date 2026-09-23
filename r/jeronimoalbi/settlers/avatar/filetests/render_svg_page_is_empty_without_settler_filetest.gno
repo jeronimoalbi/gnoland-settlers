@@ -8,7 +8,8 @@ import "gno.land/r/jeronimoalbi/settlers/avatar"
 const nobody = address("g172aaqt6g99t8u9dr90whfstrm9j6jdvjt6whh5")
 
 func main() {
-	println(avatar.Render("svg/" + nobody.String()))
+	println(avatar.Render("svg/"+nobody.String()) == "")
 }
 
 // Output:
+// true
