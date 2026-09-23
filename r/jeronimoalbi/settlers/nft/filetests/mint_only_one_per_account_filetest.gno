@@ -28,12 +28,12 @@ func main(cur realm) {
 	if err := revive(func() {
 		nft.Mint(cross(cur), aliceProof)
 	}); err != nil {
-		println("abort:", err)
+		println("Abort:", err)
 	}
 
-	println("total supply:", nft.TotalSupply())
+	println("Total supply:", nft.TotalSupply())
 }
 
 // Output:
-// abort: this account has already minted
-// total supply: 1
+// Abort: this account has already minted
+// Total supply: 1

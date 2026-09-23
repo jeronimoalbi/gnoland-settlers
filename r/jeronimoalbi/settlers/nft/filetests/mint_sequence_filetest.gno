@@ -39,24 +39,28 @@ func main(cur realm) {
 	for i, account := range accounts {
 		testing.SetRealm(testing.NewUserRealm(account.addr))
 		id := settlers.Mint(cross(cur), account.proof)
-		if id != i+1 {
-			println("wrong id for account", i, ":", id)
-		}
+		println("Account", i, "minted id:", id)
 
 		seenGnomes[settlers.TraitsOf(id)] = true
 	}
 
 	// alice is accounts[3], so she is the 4th to mint and gets token id 4.
-	println("total supply:", settlers.TotalSupply())
-	println("owner of alice's token:", settlers.OwnerOf(settlers.TokenOf(alice)) == alice)
-	println("balance of alice:", settlers.BalanceOf(alice))
-	println("token of alice:", settlers.TokenOf(alice))
-	println("every gnome different:", len(seenGnomes) == len(accounts))
+	println("Total supply:", settlers.TotalSupply())
+	println("Owner of alice's token:", settlers.OwnerOf(settlers.TokenOf(alice)).String())
+	println("Balance of alice:", settlers.BalanceOf(alice))
+	println("Token of alice:", settlers.TokenOf(alice))
+	println("Unique gnomes out of", len(accounts), "accounts:", len(seenGnomes))
 }
 
 // Output:
-// total supply: 6
-// owner of alice's token: true
-// balance of alice: 1
-// token of alice: 4
-// every gnome different: true
+// Account 0 minted id: 1
+// Account 1 minted id: 2
+// Account 2 minted id: 3
+// Account 3 minted id: 4
+// Account 4 minted id: 5
+// Account 5 minted id: 6
+// Total supply: 6
+// Owner of alice's token: g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5
+// Balance of alice: 1
+// Token of alice: 4
+// Unique gnomes out of 6 accounts: 6

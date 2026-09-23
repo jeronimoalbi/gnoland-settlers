@@ -42,7 +42,7 @@ var (
 	// Supply cap is the number of Settlers that can be minted.
 	supplyCap = capacity
 
-	// Root is the merkle root value.
+	// Root is the Merkle root value.
 	root []byte
 
 	// Total is the total number of leaves of the list of elegible accounts.
@@ -172,8 +172,8 @@ func Cap() int { return supplyCap }
 // TotalSupply returns the number of Settlers minted so far.
 func TotalSupply() int { return tokens.Size() }
 
-// Root returns the Merkle root of the list of eligible accounts, in hex.
-func Root() string { return hex.EncodeToString(root) }
+// MerkleRoot returns the Merkle root of the list of eligible accounts, in hex.
+func MerkleRoot() string { return hex.EncodeToString(root) }
 
 // Total returns the number of eligible accounts in the list.
 func Total() int { return total }

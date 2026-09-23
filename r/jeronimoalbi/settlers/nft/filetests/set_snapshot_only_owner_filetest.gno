@@ -17,12 +17,12 @@ func main(cur realm) {
 	if err := revive(func() {
 		nft.SetSnapshot(cross(cur), "057387f3d6e40789b4eb4cceed041278a98e98eae631f660ed92dae3b6e52d58", 6)
 	}); err != nil {
-		println("abort:", err)
+		println("Abort:", err)
 	}
 
-	println("root:", nft.Root())
+	println("Root:", nft.MerkleRoot())
 }
 
 // Output:
-// abort: ownable: caller is not owner
-// root:
+// Abort: ownable: caller is not owner
+// Root:

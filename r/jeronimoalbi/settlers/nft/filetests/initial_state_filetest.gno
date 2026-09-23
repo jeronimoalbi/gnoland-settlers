@@ -8,14 +8,14 @@ import (
 )
 
 func main() {
-	println("root:", nft.Root())
-	println("total:", nft.Total())
-	println("supply:", nft.TotalSupply())
-	println("cap:", nft.Cap())
+	println("Root:", nft.MerkleRoot())
+	println("Total:", nft.Total())
+	println("Supply:", nft.TotalSupply())
+	println("Cap:", nft.Cap())
 }
 
 // Output:
-// root:
-// total: 0
-// supply: 0
-// cap: 3000
+// Root:
+// Total: 0
+// Supply: 0
+// Cap: 3000

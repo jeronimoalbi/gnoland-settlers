@@ -49,16 +49,17 @@ func renderHome(res *mux.ResponseWriter, _ *mux.Request) {
 	))
 
 	minted := TotalSupply()
-	res.Write(md.Paragraph("**Minted:** " + strconv.Itoa(minted) + " of " + strconv.Itoa(supplyCap)))
 	if len(root) == 0 {
 		res.Write(md.Paragraph("The mint is not open yet."))
 	} else {
 		res.Write(md.Paragraph(
-			"**Eligible accounts:** " + strconv.Itoa(total) +
-				" · **Merkle root:** " + md.InlineCode(Root()),
+			md.BulletItem(md.Bold("Minted:")+" "+strconv.Itoa(minted)+" of "+strconv.Itoa(supplyCap)) +
+				md.BulletItem(md.Bold("Eligible accounts:")+" "+strconv.Itoa(total)) +
+				md.BulletItem(md.Bold("Merkle root:")+" "+md.InlineCode(MerkleRoot())),
 		))
+
 		res.Write(md.Paragraph(
-			"To mint, get your proof from the list of eligible accounts and call `Mint` with it: " +
+			"To mint, get your proof from the list of eligible accounts and call `Mint` with it; " +
 				"the account that signs the transaction is the one that gets the Settler.",
 		))
 	}
@@ -139,5 +140,5 @@ func tokenPath(settlerID int) string {
 }
 
 func footer() string {
-	return md.Italic(nft.Credits) + "\n"
+	return md.Blockquote(nft.Credits)
 }

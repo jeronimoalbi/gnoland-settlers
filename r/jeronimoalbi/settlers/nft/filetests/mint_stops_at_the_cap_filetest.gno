@@ -32,14 +32,14 @@ func main(cur realm) {
 	if err := revive(func() {
 		nft.Mint(cross(cur), aliceProof)
 	}); err != nil {
-		println("abort:", err)
+		println("Abort:", err)
 	}
 
-	println("total supply:", nft.TotalSupply())
-	println("token of alice:", nft.TokenOf(alice))
+	println("Total supply:", nft.TotalSupply())
+	println("Token of alice:", nft.TokenOf(alice))
 }
 
 // Output:
-// abort: sold out
-// total supply: 1
-// token of alice: 0
+// Abort: sold out
+// Total supply: 1
+// Token of alice: 0

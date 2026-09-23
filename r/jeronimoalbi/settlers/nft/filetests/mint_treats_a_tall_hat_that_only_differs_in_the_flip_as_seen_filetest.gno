@@ -45,8 +45,10 @@ func main(cur realm) {
 	testing.SetRealm(testing.NewUserRealm(alice))
 	id := settlers.Mint(cross(cur), aliceProof)
 
-	println("minted gnome does not look like the twin:", settlers.TraitsOf(id).Normalized() != twin.Normalized())
+	println("Minted gnome, packed:", nft.Pack(settlers.TraitsOf(id).Normalized()))
+	println("Twin, packed:", nft.Pack(twin.Normalized()))
 }
 
 // Output:
-// minted gnome does not look like the twin: true
+// Minted gnome, packed: 617933
+// Twin, packed: 787664

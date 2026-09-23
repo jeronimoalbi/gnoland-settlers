@@ -30,14 +30,14 @@ func main(cur realm) {
 	if err := revive(func() {
 		nft.SetSnapshot(cross(cur), strings.Repeat("ab", 32), 7)
 	}); err != nil {
-		println("abort:", err)
+		println("Abort:", err)
 	}
 
-	println("root:", nft.Root())
-	println("total:", nft.Total())
+	println("Root:", nft.MerkleRoot())
+	println("Total:", nft.Total())
 }
 
 // Output:
-// abort: the snapshot is frozen: Settlers were already minted
-// root: 057387f3d6e40789b4eb4cceed041278a98e98eae631f660ed92dae3b6e52d58
-// total: 6
+// Abort: the snapshot is frozen: Settlers were already minted
+// Root: 057387f3d6e40789b4eb4cceed041278a98e98eae631f660ed92dae3b6e52d58
+// Total: 6

@@ -24,10 +24,10 @@ func main(cur realm) {
 	otherRoot := strings.Repeat("ab", 32)
 	nft.SetSnapshot(cross(cur), otherRoot, 7)
 
-	println("root:", nft.Root())
-	println("total:", nft.Total())
+	println("Root:", nft.MerkleRoot())
+	println("Total:", nft.Total())
 }
 
 // Output:
-// root: abababababababababababababababababababababababababababababababab
-// total: 7
+// Root: abababababababababababababababababababababababababababababababab
+// Total: 7

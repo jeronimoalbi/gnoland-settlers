@@ -20,9 +20,9 @@ func main(cur realm) {
 		root  string
 		count int
 	}{
-		{"root too short", "abcd", 6},
-		{"root not hex", "zz" + fixtureRoot[2:], 6},
-		{"no accounts", fixtureRoot, 0},
+		{"Root too short", "abcd", 6},
+		{"Root not hex", "zz" + fixtureRoot[2:], 6},
+		{"No accounts", fixtureRoot, 0},
 	}
 
 	for _, tc := range tests {
@@ -35,14 +35,14 @@ func main(cur realm) {
 			println(tc.name+":", err)
 		}
 
-		println(tc.name+", root after:", nft.Root())
+		println(tc.name+", root after:", nft.MerkleRoot())
 	}
 }
 
 // Output:
-// root too short: the root must be 32 bytes in hex
-// root too short, root after:
-// root not hex: the root must be 32 bytes in hex
-// root not hex, root after:
-// no accounts: the list must have at least one account
-// no accounts, root after:
+// Root too short: the root must be 32 bytes in hex
+// Root too short, root after:
+// Root not hex: the root must be 32 bytes in hex
+// Root not hex, root after:
+// No accounts: the list must have at least one account
+// No accounts, root after:

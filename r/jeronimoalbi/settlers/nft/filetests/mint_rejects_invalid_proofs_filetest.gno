@@ -26,14 +26,14 @@ func main(cur realm) {
 		caller address
 		proof  string
 	}{
-		{"proof of another account", alice, otherProof},
-		{"account outside the list", notEligible, proof},
-		{"wrong index", alice, "2" + proof[1:]},
-		{"missing dot", alice, "abc"},
-		{"index not a number", alice, "x" + proof[1:]},
-		{"index out of range", alice, "9" + proof[1:]},
-		{"hash of the wrong size", alice, "3.abcd"},
-		{"aunts not hex", alice, "3.zz"},
+		{"Proof of another account", alice, otherProof},
+		{"Account outside the list", notEligible, proof},
+		{"Wrong index", alice, "2" + proof[1:]},
+		{"Missing dot", alice, "abc"},
+		{"Index not a number", alice, "x" + proof[1:]},
+		{"Index out of range", alice, "9" + proof[1:]},
+		{"Hash of the wrong size", alice, "3.abcd"},
+		{"Aunts not hex", alice, "3.zz"},
 	}
 
 	for _, tc := range tests {
@@ -53,19 +53,19 @@ func main(cur realm) {
 }
 
 // Output:
-// proof of another account: the proof is not valid for this account: g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5
-// proof of another account, total supply: 0
-// account outside the list: the proof is not valid for this account: g172aaqt6g99t8u9dr90whfstrm9j6jdvjt6whh5
-// account outside the list, total supply: 0
-// wrong index: the proof is not valid for this account: g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5
-// wrong index, total supply: 0
-// missing dot: the proof must be <index>.<aunts>
-// missing dot, total supply: 0
-// index not a number: the index of the proof is not valid
-// index not a number, total supply: 0
-// index out of range: the index of the proof is not valid
-// index out of range, total supply: 0
-// hash of the wrong size: the aunts of the proof must be hashes of 32 bytes in hex
-// hash of the wrong size, total supply: 0
-// aunts not hex: the aunts of the proof must be hashes of 32 bytes in hex
-// aunts not hex, total supply: 0
+// Proof of another account: the proof is not valid for this account: g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5
+// Proof of another account, total supply: 0
+// Account outside the list: the proof is not valid for this account: g172aaqt6g99t8u9dr90whfstrm9j6jdvjt6whh5
+// Account outside the list, total supply: 0
+// Wrong index: the proof is not valid for this account: g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5
+// Wrong index, total supply: 0
+// Missing dot: the proof must be <index>.<aunts>
+// Missing dot, total supply: 0
+// Index not a number: the index of the proof is not valid
+// Index not a number, total supply: 0
+// Index out of range: the index of the proof is not valid
+// Index out of range, total supply: 0
+// Hash of the wrong size: the aunts of the proof must be hashes of 32 bytes in hex
+// Hash of the wrong size, total supply: 0
+// Aunts not hex: the aunts of the proof must be hashes of 32 bytes in hex
+// Aunts not hex, total supply: 0

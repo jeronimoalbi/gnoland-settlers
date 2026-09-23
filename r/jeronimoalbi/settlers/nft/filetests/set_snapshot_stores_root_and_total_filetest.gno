@@ -21,10 +21,10 @@ func main(cur realm) {
 
 	nft.SetSnapshot(cross(cur), fixtureRoot, fixtureTotal)
 
-	println("root:", nft.Root())
-	println("total:", nft.Total())
+	println("Root:", nft.MerkleRoot())
+	println("Total:", nft.Total())
 }
 
 // Output:
-// root: 057387f3d6e40789b4eb4cceed041278a98e98eae631f660ed92dae3b6e52d58
-// total: 6
+// Root: 057387f3d6e40789b4eb4cceed041278a98e98eae631f660ed92dae3b6e52d58
+// Total: 6

@@ -32,8 +32,10 @@ func main(cur realm) {
 	testing.SetRealm(testing.NewUserRealm(alice))
 	id := settlers.Mint(cross(cur), aliceProof)
 
-	println("gnome is not the one that was marked seen:", settlers.TraitsOf(id) != candidate.Normalized())
+	println("Minted gnome, packed:", nft.Pack(settlers.TraitsOf(id)))
+	println("Gnome marked seen, packed:", nft.Pack(candidate.Normalized()))
 }
 
 // Output:
-// gnome is not the one that was marked seen: true
+// Minted gnome, packed: 264360
+// Gnome marked seen, packed: 787880

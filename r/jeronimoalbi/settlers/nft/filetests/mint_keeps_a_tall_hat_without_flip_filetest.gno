@@ -39,8 +39,10 @@ func main(cur realm) {
 	id := settlers.Mint(cross(cur), aliceProof)
 
 	traits := settlers.TraitsOf(id)
-	println("tall hat kept without flip:", traits.HatShape == 0 && traits.Flip == 0)
+	println("Hat shape:", traits.HatShape)
+	println("Flip:", traits.Flip)
 }
 
 // Output:
-// tall hat kept without flip: true
+// Hat shape: 0
+// Flip: 0

@@ -4,7 +4,6 @@
 package render_token_not_found_filetest
 
 import (
-	"strings"
 	"testing"
 
 	"gno.land/r/jeronimoalbi/settlers/nft"
@@ -27,12 +26,21 @@ func main(cur realm) {
 	nft.Mint(cross(cur), aliceProof)
 
 	for _, path := range []string{"token/0", "token/2", "token/abc"} {
-		page := nft.Render(path)
-		println(path+":", strings.Contains(page, "Settler not found"))
+		println(path+":", nft.Render(path))
 	}
 }
 
 // Output:
-// token/0: true
-// token/2: true
-// token/abc: true
+// token/0: Settler not found.
+//
+// [Home](/r/jeronimoalbi/settlers/nft)
+//
+//
+// token/2: Settler not found.
+//
+// [Home](/r/jeronimoalbi/settlers/nft)
+//
+//
+// token/abc: Settler not found.
+//
+// [Home](/r/jeronimoalbi/settlers/nft)
