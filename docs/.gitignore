@@ -1,2 +1,2 @@
 config.local.js
-snapshot*.json
+snapshot.*.json
