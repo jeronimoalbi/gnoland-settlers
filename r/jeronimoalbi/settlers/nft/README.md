@@ -27,6 +27,9 @@ If your account was eligible, you can claim your Settler from the mint page at
 [jeronimoalbi.github.io/gnoland-settlers](https://jeronimoalbi.github.io/gnoland-settlers/). Once claimed, you
 can look up any Settler, and see who it belongs to, right here in this realm.
 
+The mint page is also the quickest way to get the proof for the [`Mint`](./nft$help&func=Mint) call, type
+your address there and it shows both the proof and the exact `gnokey` command, ready to copy.
+
 ## A friendly word of caution
 
 This project is made by one person, for fun. It has not been audited by anyone. Everything here is open source,
@@ -41,3 +44,9 @@ the whole thing by hand with a terminal. Nothing here needs trusting a website: 
 and your proof are both worked out from the public genesis of `gnoland-1`, and you can check every step
 following the instructions you can find in [jeronimoalbi/gnoland-settlers](https://github.com/jeronimoalbi/gnoland-settlers)
 repository.
+
+## See your Settler as a picture
+
+Once you have your Settler, a separate [avatar](../avatar) realm can draw it as a picture whenever it's
+asked to, so you, or any other realm or web app, can show it next to your address, as profile picture, in
+forum post, a leaderboard row, wherever you like. See its [README](../avatar/README.md) for more.
