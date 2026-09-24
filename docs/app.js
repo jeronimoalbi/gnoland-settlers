@@ -41,6 +41,7 @@ let addresses = []; // the sorted list of eligible addresses
 let tree = null; // the Merkle tree of that list
 let account = ""; // the address that is being checked
 let proof = ""; // the proof of `account`, if it is eligible
+let settlerURL = ""; // the in-memory URL of the Settler picture on screen, freed when it is replaced
 
 /** Reads the collection, downloads the list, and checks the list against the root in the realm. */
 async function start() {
@@ -173,6 +174,8 @@ async function showSettler(address, id) {
     if (!svg) return;
     // An SVG shown through <img> is only a picture: a browser does not run scripts inside it.
     const url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
+    if (settlerURL) URL.revokeObjectURL(settlerURL); // free the picture that was shown before
+    settlerURL = url;
     $("settler").src = url;
     $("settler").hidden = false;
     $("settler-link").href = `${config.gnoweb}${realmPath(config)}:token/${id}`;
