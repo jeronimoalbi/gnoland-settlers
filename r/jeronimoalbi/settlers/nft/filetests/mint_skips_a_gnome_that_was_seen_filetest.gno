@@ -24,9 +24,8 @@ func main(cur realm) {
 	settlers.UnsafeReset(cross(cur), deployer)
 	settlers.SetSnapshot(cross(cur), fixtureRoot, fixtureTotal)
 
-	// Alice mints first, at height 100, so this predicts the gnome id 1 would naturally get.
-	testing.SetHeight(100)
-	candidate := nft.NewTraits(settlers.UnsafeSeedFor(alice, 100, 1, 0))
+	// Alice mints first, in this same block, so this predicts the gnome id 1 would naturally get.
+	candidate := nft.NewTraits(settlers.UnsafeSeedFor(alice, 1, 0))
 	settlers.UnsafeMarkSeen(cross(cur), nft.Pack(candidate.Normalized()))
 
 	testing.SetRealm(testing.NewUserRealm(alice))
@@ -37,5 +36,5 @@ func main(cur realm) {
 }
 
 // Output:
-// Minted gnome, packed: 264360
-// Gnome marked seen, packed: 787880
+// Minted gnome, packed: 626828
+// Gnome marked seen, packed: 289257

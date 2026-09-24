@@ -49,5 +49,5 @@ func rootTag(svg string) string { return svg[:strings.Index(svg, ">")+1] }
 // Size 5000, above the maximum: <svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 0 32 32" width="2048" height="2048" shape-rendering="crispEdges">
 // Size 0, scales to the container: <svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 0 32 32" shape-rendering="crispEdges">
 // Size -5, scales to the container: <svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 0 32 32" shape-rendering="crispEdges">
-// Background element: <rect x="-4" width="32" height="32" fill="#cfe8f3"/>
+// Background element: <rect x="-4" width="32" height="32" fill="#dbeed2"/>
 // Without the background element, same as transparent: true

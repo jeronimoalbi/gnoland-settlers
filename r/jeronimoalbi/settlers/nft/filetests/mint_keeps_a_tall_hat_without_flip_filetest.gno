@@ -6,6 +6,7 @@ package mint_keeps_a_tall_hat_without_flip_filetest
 
 import (
 	"testing"
+	"time"
 
 	"gno.land/p/jeronimoalbi/settlers/nft/v0"
 	settlers "gno.land/r/jeronimoalbi/settlers/nft"
@@ -24,23 +25,28 @@ func main(cur realm) {
 	settlers.UnsafeReset(cross(cur), deployer)
 	settlers.SetSnapshot(cross(cur), fixtureRoot, fixtureTotal)
 
-	height := int64(100)
 	for {
-		candidate := nft.NewTraits(settlers.UnsafeSeedFor(alice, height, 1, 0))
+		candidate := nft.NewTraits(settlers.UnsafeSeedFor(alice, 1, 0))
 		if candidate.HatShape == 0 && candidate.Flip == 1 {
 			break
 		}
 
-		height++
+		nextSecond()
 	}
 
-	testing.SetHeight(height)
 	testing.SetRealm(testing.NewUserRealm(alice))
 	id := settlers.Mint(cross(cur), aliceProof)
 
 	traits := settlers.TraitsOf(id)
 	println("Hat shape:", traits.HatShape)
 	println("Flip:", traits.Flip)
+}
+
+// nextSecond moves the block time one second forward, keeping the rest of the context.
+func nextSecond() {
+	ctx := testing.GetContext()
+	ctx.Time = ctx.Time.Add(time.Second)
+	testing.SetContext(ctx)
 }
 
 // Output:

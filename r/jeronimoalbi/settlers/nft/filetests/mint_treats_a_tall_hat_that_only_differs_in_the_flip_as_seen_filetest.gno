@@ -6,6 +6,7 @@ package mint_treats_a_tall_hat_that_only_differs_in_the_flip_as_seen_filetest
 
 import (
 	"testing"
+	"time"
 
 	"gno.land/p/jeronimoalbi/settlers/nft/v0"
 	settlers "gno.land/r/jeronimoalbi/settlers/nft"
@@ -24,24 +25,22 @@ func main(cur realm) {
 	settlers.UnsafeReset(cross(cur), deployer)
 	settlers.SetSnapshot(cross(cur), fixtureRoot, fixtureTotal)
 
-	// Find a height where alice's first mint would naturally be a tall hat with the flip set (the flip
+	// Find a block time where alice's first mint would naturally be a tall hat with the flip set (the flip
 	// does nothing for a tall hat, so this is the "twin" case: same image, different raw traits).
-	height := int64(100)
 	var twin nft.Traits
 	for {
-		candidate := nft.NewTraits(settlers.UnsafeSeedFor(alice, height, 1, 0))
+		candidate := nft.NewTraits(settlers.UnsafeSeedFor(alice, 1, 0))
 		if candidate.HatShape == 0 && candidate.Flip == 1 {
 			twin = candidate
 			twin.Flip = 0
 			break
 		}
 
-		height++
+		nextSecond()
 	}
 
 	settlers.UnsafeMarkSeen(cross(cur), nft.Pack(twin.Normalized()))
 
-	testing.SetHeight(height)
 	testing.SetRealm(testing.NewUserRealm(alice))
 	id := settlers.Mint(cross(cur), aliceProof)
 
@@ -49,6 +48,13 @@ func main(cur realm) {
 	println("Twin, packed:", nft.Pack(twin.Normalized()))
 }
 
+// nextSecond moves the block time one second forward, keeping the rest of the context.
+func nextSecond() {
+	ctx := testing.GetContext()
+	ctx.Time = ctx.Time.Add(time.Second)
+	testing.SetContext(ctx)
+}
+
 // Output:
-// Minted gnome, packed: 617933
-// Twin, packed: 787664
+// Minted gnome, packed: 855436
+// Twin, packed: 527694

@@ -8,6 +8,7 @@ import (
 	"encoding/hex"
 	"strconv"
 	"strings"
+	"time"
 
 	"gno.land/p/jeronimoalbi/bloom/v0"
 	"gno.land/p/jeronimoalbi/settlers/nft/v0"
@@ -67,8 +68,8 @@ var (
 	// Claimed has the ID of the token for each account.
 	claimed = bptree.NewBPTree32()
 
-	// Seen has the packed traits of the tokens, so that two Settlers are never the same.
-	seen = newTraitsFilter()
+	// Seen traits has the packed traits of minted tokens to check that two Settlers are never the same.
+	seenTraits = newTraitsFilter()
 )
 
 // Token represents a Settler.
@@ -176,22 +177,28 @@ func Mint(cur realm, proof string) int {
 	}
 
 	settlerID := minted + 1
-	var packed uint32
+	prefix := seedPrefix(caller, settlerID)
+
+	var (
+		packed    uint32
+		packedKey string
+	)
 	for nonce := 0; ; nonce++ {
 		if nonce == maxNonce {
 			panic("could not find a new gnome, try again")
 		}
 
-		seed := generateSeed(caller, runtime.ChainHeight(), settlerID, nonce)
+		seed := hashSeed(prefix, nonce)
 		traits := nft.NewTraits(seed)
 		packed = nft.Pack(traits.Normalized())
-		if !seen.ContainsString(strconv.FormatUint(uint64(packed), 10)) {
+		packedKey = strconv.FormatUint(uint64(packed), 10)
+		if !seenTraits.ContainsString(packedKey) {
 			break
 		}
 	}
 
 	tokens.Set(makeKey(settlerID), token{owner: caller, traits: packed})
-	seen.AddString(strconv.FormatUint(uint64(packed), 10))
+	seenTraits.AddString(packedKey)
 	claimed.Set(caller.String(), settlerID)
 	chain.Emit(
 		"Transfer",
@@ -257,10 +264,17 @@ func newTraitsFilter() *bloom.Bloom {
 	return bloom.NewWithMK(m, k)
 }
 
-func generateSeed(caller address, height int64, settlerID, nonce int) string {
-	input := caller.String() + ":" + strconv.FormatInt(height, 10) + ":" +
-		strconv.Itoa(settlerID) + ":" + strconv.Itoa(nonce)
-	sum := sha256.Sum256([]byte(input))
+func generateSeed(caller address, settlerID, nonce int) string {
+	return hashSeed(seedPrefix(caller, settlerID), nonce)
+}
+
+func seedPrefix(caller address, settlerID int) string {
+	return strconv.FormatInt(time.Now().UnixNano(), 10) + ":" + caller.String() +
+		":" + strconv.Itoa(settlerID) + ":"
+}
+
+func hashSeed(prefix string, nonce int) string {
+	sum := sha256.Sum256([]byte(prefix + strconv.Itoa(nonce)))
 	return hex.EncodeToString(sum[:])
 }
 

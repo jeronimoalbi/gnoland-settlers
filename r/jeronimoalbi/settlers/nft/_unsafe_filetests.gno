@@ -16,7 +16,7 @@ func UnsafeReset(cur realm, owner address) {
 	total = 0
 	tokens = bptree.NewBPTree32()
 	claimed = bptree.NewBPTree32()
-	seen = newTraitsFilter()
+	seenTraits = newTraitsFilter()
 	supplyCap = capacity
 
 	Admin = ownable.NewWithAddress(owner)
@@ -28,22 +28,22 @@ func UnsafeSetCap(cur realm, n int) {
 	supplyCap = n
 }
 
-// UnsafeSeedFor generates a seed for a specific gnome.
-func UnsafeSeedFor(caller address, height int64, id, nonce int) string {
+// UnsafeSeedFor generates a seed for a specific gnome, with the current block time.
+func UnsafeSeedFor(caller address, id, nonce int) string {
 	assertIsDevChain()
-	return generateSeed(caller, height, id, nonce)
+	return generateSeed(caller, id, nonce)
 }
 
 // UnsafeMarkSeen marks packed traits as already minted, without minting them.
 func UnsafeMarkSeen(cur realm, packed uint32) {
 	assertIsDevChain()
-	seen.AddString(strconv.FormatUint(uint64(packed), 10))
+	seenTraits.AddString(strconv.FormatUint(uint64(packed), 10))
 }
 
 // UnsafeSeenContains reports whether packed traits are marked as minted.
 func UnsafeSeenContains(packed uint32) bool {
 	assertIsDevChain()
-	return seen.ContainsString(strconv.FormatUint(uint64(packed), 10))
+	return seenTraits.ContainsString(strconv.FormatUint(uint64(packed), 10))
 }
 
 func assertIsDevChain() {
