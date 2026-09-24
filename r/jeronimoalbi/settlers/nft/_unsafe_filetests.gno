@@ -18,8 +18,7 @@ func UnsafeReset(cur realm, owner address) {
 	claimed = bptree.NewBPTree32()
 	seenTraits = newTraitsFilter()
 	supplyCap = capacity
-
-	Admin = ownable.NewWithAddress(owner)
+	admin = ownable.NewWithAddress(owner)
 }
 
 // UnsafeSetCap lowers or raises the mint cap.

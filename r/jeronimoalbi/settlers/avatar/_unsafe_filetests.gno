@@ -9,7 +9,7 @@ import (
 // UnsafeSetAdmin makes owner the admin.
 func UnsafeSetAdmin(cur realm, owner address) {
 	assertIsDevChain()
-	Admin = ownable.NewWithAddress(owner)
+	admin = ownable.NewWithAddress(owner)
 }
 
 func assertIsDevChain() {

@@ -21,9 +21,6 @@ const (
 )
 
 var (
-	// Admin account for the realm, only valid to post or clear realm-wide notices.
-	Admin *ownable.Ownable
-
 	// Notice is a realm-wide message the admin can post at any time, shown at the top of the page.
 	// It never affects SVG, URI or Markdown, it is purely informational.
 	Notice string
@@ -34,6 +31,9 @@ var (
 	// Realm path is the path of this realm.
 	RealmPath string
 
+	// Admin account for the realm, only valid to post or clear realm-wide notices.
+	admin *ownable.Ownable
+
 	// Go snippet is the Go usage example.
 	goSnippet string
 
@@ -43,7 +43,7 @@ var (
 
 func init(cur realm) {
 	RealmPath = strings.TrimPrefix(cur.PkgPath(), runtime.ChainDomain())
-	Admin = ownable.NewWithAddress(cur.Previous().Address())
+	admin = ownable.NewWithAddress(cur.Previous().Address())
 	pkgPath := runtime.ChainDomain() + RealmPath
 
 	goSnippet = "import \"" + pkgPath + "\"\n\n" +
@@ -56,10 +56,21 @@ func init(cur realm) {
 		"  | tail -n +2 | sed '1s/^data: //' > settler.svg\n"
 }
 
+// Admin returns the address of the admin account.
+func Admin() address { return admin.Owner() }
+
+// TransferAdmin makes another account the admin. Only the admin can call it.
+func TransferAdmin(cur realm, newAdmin address) {
+	assertIsCurrent(cur)
+	if err := admin.TransferOwnership(0, cur, newAdmin); err != nil {
+		panic(err)
+	}
+}
+
 // SetNotice posts a realm-wide message, shown at the top of the page.
 func SetNotice(cur realm, alertType mdalert.Type, msg string) {
 	assertIsCurrent(cur)
-	Admin.AssertOwnedBy(cur.Previous().Address())
+	admin.AssertOwnedBy(cur.Previous().Address())
 	assertIsValidAlertType(alertType)
 
 	NoticeType = alertType
@@ -70,7 +81,7 @@ func SetNotice(cur realm, alertType mdalert.Type, msg string) {
 // ClearNotice removes the current notice.
 func ClearNotice(cur realm) {
 	assertIsCurrent(cur)
-	Admin.AssertOwnedBy(cur.Previous().Address())
+	admin.AssertOwnedBy(cur.Previous().Address())
 
 	NoticeType = ""
 	Notice = ""
