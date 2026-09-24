@@ -7,6 +7,7 @@ import (
 	"gno.land/p/moul/md/v0"
 	"gno.land/p/moul/mdtable/v0"
 	"gno.land/p/nt/markdown/sanitize/v0"
+	"gno.land/p/nt/mdalert/v0"
 	"gno.land/p/nt/mux/v0"
 )
 
@@ -43,6 +44,11 @@ func Render(path string) string {
 
 func renderHome(res *mux.ResponseWriter, _ *mux.Request) {
 	res.Write(md.H1("Settlers"))
+
+	if Notice != "" {
+		res.Write(mdalert.New(NoticeType, "Message", Notice, false).String() + "\n\n")
+	}
+
 	res.Write(md.Paragraph(
 		"Soulbound pixel-art gnomes for the early settlers of Gno.land. " +
 			"Every account that had at least 15 GNOT at the launch of `gnoland-1` can mint one, " +

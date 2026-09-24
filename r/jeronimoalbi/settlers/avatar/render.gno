@@ -1,12 +1,11 @@
 package avatar
 
 import (
-	"chain/runtime"
 	"strconv"
-	"strings"
 
 	"gno.land/p/moul/md/v0"
 	"gno.land/p/moul/mdtable/v0"
+	"gno.land/p/nt/mdalert/v0"
 	"gno.land/p/nt/mux/v0"
 	settlers "gno.land/r/jeronimoalbi/settlers/nft"
 )
@@ -18,31 +17,6 @@ const (
 	// Samples is how many avatars the home page shows.
 	samples = 6
 )
-
-var (
-	// Realm path is the path of this realm.
-	RealmPath string
-
-	// Go snippet is the Go usage example.
-	goSnippet string
-
-	// Gnokey snippet is the gnokey example.
-	gnokeySnippet string
-)
-
-func init(cur realm) {
-	RealmPath = strings.TrimPrefix(cur.PkgPath(), runtime.ChainDomain())
-	pkgPath := runtime.ChainDomain() + RealmPath
-
-	goSnippet = "import \"" + pkgPath + "\"\n\n" +
-		"func RenderUser(addr address) string {\n\treturn avatar.Markdown(addr, 32, true) " +
-		"+ \" \" + addr.String()\n}\n"
-
-	gnokeySnippet = "gnokey query vm/qrender \\\n" +
-		"  -remote <remote> \\\n" +
-		"  -data \"" + pkgPath + ":svg/{address}?size=256\" \\\n" +
-		"  | tail -n +2 | sed '1s/^data: //' > settler.svg\n"
-}
 
 // Render renders the realm.
 //
@@ -66,6 +40,11 @@ func Render(path string) string {
 
 func renderHome(res *mux.ResponseWriter, _ *mux.Request) {
 	res.Write(md.H1("Settler avatars"))
+
+	if Notice != "" {
+		res.Write(mdalert.New(NoticeType, "Message", Notice, false).String() + "\n\n")
+	}
+
 	res.Write(md.Paragraph("This realm draws a Settler as a picture give an address."))
 	res.Write(md.Paragraph(
 		"It doesn't own the Settler, or store anything about it, it just looks one up and draws it, " +

@@ -12,6 +12,7 @@ import (
 	"gno.land/p/jeronimoalbi/bloom/v0"
 	"gno.land/p/jeronimoalbi/settlers/nft/v0"
 	"gno.land/p/nt/bptree/v0"
+	"gno.land/p/nt/mdalert/v0"
 	"gno.land/p/nt/ownable/v0"
 )
 
@@ -36,11 +37,20 @@ const (
 var (
 	// Admin account for the realm.
 	// This account is only valid to set snapshot params, once setted minting
-	// can start and the account becomes obsolete when the first NFT is minted.
+	// can start and after the first NFT is minted the account is not allowed to change
+	// snapshot params anymore.
+	// Admin is always allowed to post or clear realm-wide notices.
 	Admin *ownable.Ownable
 
 	// Realm path is the path of this realm.
 	RealmPath string
+
+	// Notice is a realm-wide message the admin can post at any time, shown at the top of the page.
+	// It never affects SVG, URI or Markdown, it is purely informational.
+	Notice string
+
+	// NoticeType is the style Notice is shown as.
+	NoticeType mdalert.Type
 
 	// Supply cap is the number of Settlers that can be minted.
 	supplyCap = capacity
@@ -108,6 +118,24 @@ func SetSnapshot(cur realm, rootHex string, count int) {
 		"root", rootHex,
 		"total", strconv.Itoa(count),
 	)
+}
+
+// SetNotice posts a realm-wide message, shown at the top of the page.
+func SetNotice(cur realm, alertType mdalert.Type, msg string) {
+	Admin.AssertOwnedBy(cur.Previous().Address())
+
+	NoticeType = alertType
+	Notice = msg
+	chain.Emit("NoticeSet", "type", string(alertType))
+}
+
+// ClearNotice removes the current notice.
+func ClearNotice(cur realm) {
+	Admin.AssertOwnedBy(cur.Previous().Address())
+
+	NoticeType = ""
+	Notice = ""
+	chain.Emit("NoticeCleared")
 }
 
 // Mint mints a Settler to the caller and returns its id.
