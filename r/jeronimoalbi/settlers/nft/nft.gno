@@ -96,6 +96,7 @@ func init(cur realm) {
 // It can be called again to correct a mistake until the first Settler is minted,
 // from then on the list is frozen.
 func SetSnapshot(cur realm, rootHex string, count int) {
+	assertIsCurrent(cur)
 	Admin.AssertOwnedBy(cur.Previous().Address())
 
 	if tokens.Size() > 0 {
@@ -122,6 +123,7 @@ func SetSnapshot(cur realm, rootHex string, count int) {
 
 // SetNotice posts a realm-wide message, shown at the top of the page.
 func SetNotice(cur realm, alertType mdalert.Type, msg string) {
+	assertIsCurrent(cur)
 	Admin.AssertOwnedBy(cur.Previous().Address())
 
 	NoticeType = alertType
@@ -131,6 +133,7 @@ func SetNotice(cur realm, alertType mdalert.Type, msg string) {
 
 // ClearNotice removes the current notice.
 func ClearNotice(cur realm) {
+	assertIsCurrent(cur)
 	Admin.AssertOwnedBy(cur.Previous().Address())
 
 	NoticeType = ""
@@ -142,7 +145,13 @@ func ClearNotice(cur realm) {
 //
 // The proof shows that the caller is in the list of eligible accounts.
 // Proof format is "<index>.<aunts>".
+// Only user accounts can mint, either with a call or a run transaction, realms can't.
 func Mint(cur realm, proof string) int {
+	assertIsCurrent(cur)
+	if !cur.Previous().IsUser() {
+		panic("only user accounts can mint")
+	}
+
 	if len(root) == 0 {
 		panic("the mint is not open yet")
 	}
@@ -276,4 +285,10 @@ func splitProof(proof string) (int, []byte, string) {
 func makeKey(settlerID int) string {
 	s := strconv.Itoa(settlerID)
 	return strings.Repeat("0", 5-len(s)) + s
+}
+
+func assertIsCurrent(cur realm) {
+	if !cur.IsCurrent() {
+		panic("unauthorized")
+	}
 }

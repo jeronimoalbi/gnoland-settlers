@@ -58,6 +58,7 @@ func init(cur realm) {
 
 // SetNotice posts a realm-wide message, shown at the top of the page.
 func SetNotice(cur realm, alertType mdalert.Type, msg string) {
+	assertIsCurrent(cur)
 	Admin.AssertOwnedBy(cur.Previous().Address())
 
 	NoticeType = alertType
@@ -67,6 +68,7 @@ func SetNotice(cur realm, alertType mdalert.Type, msg string) {
 
 // ClearNotice removes the current notice.
 func ClearNotice(cur realm) {
+	assertIsCurrent(cur)
 	Admin.AssertOwnedBy(cur.Previous().Address())
 
 	NoticeType = ""
@@ -136,5 +138,11 @@ func options(size int, transparent bool) nft.Options {
 	return nft.Options{
 		Size:         size,
 		NoBackground: transparent,
+	}
+}
+
+func assertIsCurrent(cur realm) {
+	if !cur.IsCurrent() {
+		panic("unauthorized")
 	}
 }
