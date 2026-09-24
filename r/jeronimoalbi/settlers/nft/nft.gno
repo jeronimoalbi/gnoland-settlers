@@ -126,6 +126,7 @@ func SetSnapshot(cur realm, rootHex string, count int) {
 func SetNotice(cur realm, alertType mdalert.Type, msg string) {
 	assertIsCurrent(cur)
 	Admin.AssertOwnedBy(cur.Previous().Address())
+	assertIsValidAlertType(alertType)
 
 	NoticeType = alertType
 	Notice = msg
@@ -305,4 +306,13 @@ func assertIsCurrent(cur realm) {
 	if !cur.IsCurrent() {
 		panic("unauthorized")
 	}
+}
+
+func assertIsValidAlertType(t mdalert.Type) {
+	switch t {
+	case mdalert.TypeCaution, mdalert.TypeInfo, mdalert.TypeNote,
+		mdalert.TypeSuccess, mdalert.TypeTip, mdalert.TypeWarning:
+		return
+	}
+	panic("invalid notice type")
 }
