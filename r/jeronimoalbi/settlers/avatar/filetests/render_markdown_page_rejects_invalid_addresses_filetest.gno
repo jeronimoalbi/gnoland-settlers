@@ -15,29 +15,29 @@ func main() {
 // Output:
 // www.evil.com: Not a valid address.
 //
-// [Home](/r/jeronimoalbi/settlers/avatar)
+// [\< Home](/r/jeronimoalbi/settlers/avatar)
 //
 //
 // g1short: Not a valid address.
 //
-// [Home](/r/jeronimoalbi/settlers/avatar)
+// [\< Home](/r/jeronimoalbi/settlers/avatar)
 //
 //
 // G1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5: Not a valid address.
 //
-// [Home](/r/jeronimoalbi/settlers/avatar)
+// [\< Home](/r/jeronimoalbi/settlers/avatar)
 //
 //
 // x`y: Not a valid address.
 //
-// [Home](/r/jeronimoalbi/settlers/avatar)
+// [\< Home](/r/jeronimoalbi/settlers/avatar)
 //
 //
 // <b>x: Not a valid address.
 //
-// [Home](/r/jeronimoalbi/settlers/avatar)
+// [\< Home](/r/jeronimoalbi/settlers/avatar)
 //
 //
 // [click](evil.com): Not a valid address.
 //
-// [Home](/r/jeronimoalbi/settlers/avatar)
+// [\< Home](/r/jeronimoalbi/settlers/avatar)

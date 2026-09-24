@@ -32,5 +32,5 @@ func TokenURI(settlerID int) string {
 
 // ExternalURL returns the URL to a Settler profile page.
 func ExternalURL(settlerID int) string {
-	return "https://" + runtime.ChainDomain() + realmPath + ":token/" + strconv.Itoa(settlerID)
+	return "https://" + runtime.ChainDomain() + RealmPath + ":token/" + strconv.Itoa(settlerID)
 }

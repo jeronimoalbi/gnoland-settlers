@@ -14,4 +14,4 @@ func main() {
 // # Avatar of `g172aaqt6g99t8u9dr90whfstrm9j6jdvjt6whh5`
 //
 //
-// [Home](/r/jeronimoalbi/settlers/avatar)
+// [\< Home](/r/jeronimoalbi/settlers/avatar)

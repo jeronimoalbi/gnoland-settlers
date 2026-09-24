@@ -15,29 +15,29 @@ func main() {
 // Output:
 // www.evil.com: Not a valid address.
 //
-// [Home](/r/jeronimoalbi/settlers/nft)
+// [\< Home](/r/jeronimoalbi/settlers/nft)
 //
 //
 // g1short: Not a valid address.
 //
-// [Home](/r/jeronimoalbi/settlers/nft)
+// [\< Home](/r/jeronimoalbi/settlers/nft)
 //
 //
 // G1JG8MTUTU9KHHFWC4NXMUHCPFTF0PAJDHFVSQF5: Not a valid address.
 //
-// [Home](/r/jeronimoalbi/settlers/nft)
+// [\< Home](/r/jeronimoalbi/settlers/nft)
 //
 //
 // x`y: Not a valid address.
 //
-// [Home](/r/jeronimoalbi/settlers/nft)
+// [\< Home](/r/jeronimoalbi/settlers/nft)
 //
 //
 // <b>x: Not a valid address.
 //
-// [Home](/r/jeronimoalbi/settlers/nft)
+// [\< Home](/r/jeronimoalbi/settlers/nft)
 //
 //
 // [click](evil.com): Not a valid address.
 //
-// [Home](/r/jeronimoalbi/settlers/nft)
+// [\< Home](/r/jeronimoalbi/settlers/nft)

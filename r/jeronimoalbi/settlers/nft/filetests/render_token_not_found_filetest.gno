@@ -33,14 +33,14 @@ func main(cur realm) {
 // Output:
 // token/0: Settler not found.
 //
-// [Home](/r/jeronimoalbi/settlers/nft)
+// [\< Home](/r/jeronimoalbi/settlers/nft)
 //
 //
 // token/2: Settler not found.
 //
-// [Home](/r/jeronimoalbi/settlers/nft)
+// [\< Home](/r/jeronimoalbi/settlers/nft)
 //
 //
 // token/abc: Settler not found.
 //
-// [Home](/r/jeronimoalbi/settlers/nft)
+// [\< Home](/r/jeronimoalbi/settlers/nft)

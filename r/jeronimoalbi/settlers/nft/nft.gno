@@ -39,6 +39,9 @@ var (
 	// can start and the account becomes obsolete when the first NFT is minted.
 	Admin *ownable.Ownable
 
+	// Realm path is the path of this realm.
+	RealmPath string
+
 	// Supply cap is the number of Settlers that can be minted.
 	supplyCap = capacity
 
@@ -56,9 +59,6 @@ var (
 
 	// Seen has the packed traits of the tokens, so that two Settlers are never the same.
 	seen = newTraitsFilter()
-
-	// Realm path is the path of this realm.
-	realmPath string
 )
 
 // Token represents a Settler.
@@ -68,7 +68,7 @@ type token struct {
 }
 
 func init(cur realm) {
-	realmPath = strings.TrimPrefix(cur.PkgPath(), runtime.ChainDomain())
+	RealmPath = strings.TrimPrefix(cur.PkgPath(), runtime.ChainDomain())
 	Admin = ownable.NewWithAddress(cur.Previous().Address())
 
 	// Announce the new collection
@@ -180,7 +180,7 @@ func Total() int { return total }
 
 // CollectionID returns the ID that the events use for this collection.
 func CollectionID() string {
-	return runtime.ChainDomain() + realmPath + "." + Symbol + ".0000000"
+	return runtime.ChainDomain() + RealmPath + "." + Symbol + ".0000000"
 }
 
 // OwnerOf returns the owner account of a Settler.

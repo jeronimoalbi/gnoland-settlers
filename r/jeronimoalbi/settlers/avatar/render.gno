@@ -17,17 +17,31 @@ const (
 
 	// Samples is how many avatars the home page shows.
 	samples = 6
-
-	// Snippet contains a package usage snippet.
-	snippet = "import \"gno.land/r/jeronimoalbi/settlers/avatar\"\n\n" +
-		"func row(addr address) string {\n\treturn avatar.Markdown(addr, 32, true) " +
-		"+ \" \" + addr.String()\n}\n"
 )
 
-var realmPath string
+var (
+	// Realm path is the path of this realm.
+	RealmPath string
+
+	// Go snippet is the Go usage example.
+	goSnippet string
+
+	// Gnokey snippet is the gnokey example.
+	gnokeySnippet string
+)
 
 func init(cur realm) {
-	realmPath = strings.TrimPrefix(cur.PkgPath(), runtime.ChainDomain())
+	RealmPath = strings.TrimPrefix(cur.PkgPath(), runtime.ChainDomain())
+	pkgPath := runtime.ChainDomain() + RealmPath
+
+	goSnippet = "import \"" + pkgPath + "\"\n\n" +
+		"func RenderUser(addr address) string {\n\treturn avatar.Markdown(addr, 32, true) " +
+		"+ \" \" + addr.String()\n}\n"
+
+	gnokeySnippet = "gnokey query vm/qrender \\\n" +
+		"  -remote <remote> \\\n" +
+		"  -data \"" + pkgPath + ":svg/{address}?size=256\" \\\n" +
+		"  | tail -n +2 | sed '1s/^data: //' > settler.svg\n"
 }
 
 // Render renders the realm.
@@ -52,13 +66,38 @@ func Render(path string) string {
 
 func renderHome(res *mux.ResponseWriter, _ *mux.Request) {
 	res.Write(md.H1("Settler avatars"))
+	res.Write(md.Paragraph("This realm draws a Settler as a picture give an address."))
 	res.Write(md.Paragraph(
-		"The " + md.Link("Settlers", "/r/jeronimoalbi/settlers/nft") +
-			" of an address as an avatar, for other realms and for web apps.",
+		"It doesn't own the Settler, or store anything about it, it just looks one up and draws it, " +
+			"fresh, every time it's asked. That's on purpose, keeping the drawing separate from the main " +
+			"collection means any other realm or web app on Gno.land, a forum, a leaderboard, a profile " +
+			"page, can show a Settler next to an address without needing to understand pixel art, traits, " +
+			"or how any of it's put together.",
 	))
 
+	res.Write(md.Paragraph(
+		"The " + md.Link("Settlers nft", settlers.RealmPath) + " realm is still the one that actually mints " +
+			"the Settlers and keeps track of who owns what.",
+	))
+
+	res.Write(md.Paragraph("Realm paths:"))
+	pathsTable := mdtable.Table{Headers: []string{"Path", "Description"}}
+	pathsTable.Append([]string{
+		md.InlineCode("svg/{address}"),
+		"The SVG of the Settler of an address.",
+	})
+	pathsTable.Append([]string{
+		md.InlineCode("md/{address}"),
+		"The Markdown that Markdown returns for an address, rendered, with the same parameters.",
+	})
+	res.Write(pathsTable.String() + "\n")
+
 	res.Write(md.H2("From a realm"))
-	res.Write(md.LanguageCodeBlock("go", snippet))
+	res.Write(md.Paragraph(
+		"Call it directly from another realm, for example to show a Settler " +
+			"next to an address in your own " + md.InlineCode("Render") + " function:",
+	))
+	res.Write(md.LanguageCodeBlock("go", goSnippet))
 
 	table := mdtable.Table{Headers: []string{"Function", "Description"}}
 	table.Append([]string{
@@ -82,18 +121,24 @@ func renderHome(res *mux.ResponseWriter, _ *mux.Request) {
 	))
 
 	res.Write(md.H2("From a web app"))
-	res.Write(md.Paragraph("Ask the node for the page of an address, with `vm/qrender`, and use what it returns as an image: " +
-		md.InlineCode(realmPath+":svg/{address}?size=64&transparent=1") + ". It is empty if the address has no Settler."))
+	res.Write(md.Paragraph(
+		"Ask the node for the page of an address, with `vm/qrender`, and use what it returns as an image: " +
+			md.InlineCode(RealmPath+":svg/{address}?size=64&transparent=1") +
+			". It is empty if the address has no Settler.",
+	))
+	res.Write(md.Paragraph("With gnokey, from a terminal, save it straight to a file:"))
+	res.Write(md.LanguageCodeBlock("sh", gnokeySnippet))
 
 	if n := settlers.TotalSupply(); n > 0 {
 		res.Write(md.H2("Last Settlers"))
 
 		for id := n; id > 0 && id > n-samples; id-- {
 			owner := settlers.OwnerOf(id)
+			tokenPath := settlers.RealmPath + ":token/" + strconv.Itoa(id)
 			table := mdtable.Table{Headers: []string{"", ""}}
 			table.Append([]string{
 				Markdown(owner, sampleSize, false),
-				md.InlineCode(owner.String()),
+				md.Link(owner.String(), tokenPath),
 			})
 			res.Write(table.String() + "\n")
 		}
@@ -114,13 +159,13 @@ func renderMarkdown(res *mux.ResponseWriter, req *mux.Request) {
 	addr := req.GetVar("addr")
 	if !address(addr).IsValid() {
 		res.Write(md.Paragraph("Not a valid address."))
-		res.Write(md.Paragraph(md.Link("Home", realmPath)))
+		res.Write(md.Paragraph(md.Link("< Home", RealmPath)))
 		return
 	}
 
 	res.Write(md.H1("Avatar of " + md.InlineCode(addr)))
 	res.Write(md.Paragraph(Markdown(address(addr), size, transparentParam(req))))
-	res.Write(md.Paragraph(md.Link("Home", realmPath)))
+	res.Write(md.Paragraph(md.Link("< Home", RealmPath)))
 }
 
 func sizeParam(req *mux.Request) int {

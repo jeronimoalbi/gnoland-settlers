@@ -8,7 +8,8 @@ whenever it's asked to. Keeping it separate means any other realm or web app on 
 Settler next to their name, in a forum post, a leaderboard, or a profile, without having to know anything
 about how the art is put together. They just ask this realm for the picture.
 
-The main [Settlers](../nft) realm is what actually hands out the gnomes and keeps track of who owns what.
+The [Settlers nft realm](/r/jeronimoalbi/settlers/nft) is what actually hands out the gnomes and keeps
+track of who owns what.
 
 ## Usage Example
 
@@ -17,11 +18,11 @@ This gives you a Settler image next to the address, ready to write into your own
 ```go
 import "gno.land/r/jeronimoalbi/settlers/avatar"
 
-func Example(addr address) string {
+func RenderUser(addr address) string {
 	// Size: 32x32 px, Transparent background: true
 	return avatar.Markdown(addr, 32, true) + " " + addr.String()
 }
 ```
 
-`Markdown` returns nothing if the address has no Settler, so there's no need to check first. `SVG` and
-`URI` work the same way, and give you the raw picture instead, if that's what you need.
+`Markdown` returns nothing if the address has no Settler, so there's no need to check first.
+`SVG` and `URI` work the same way, and give you the raw picture instead, if that's what you need.
