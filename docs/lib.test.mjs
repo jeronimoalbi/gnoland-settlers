@@ -159,6 +159,16 @@ test("ParseEval", () => {
     { name: "a 64-bit number", answer: "(12 int64)", want: 12 },
     { name: "a token id", answer: '("12" gno.land/p/nt/grc721/v0.TokenID)', want: "12" },
     { name: "an empty token id", answer: '("" gno.land/p/nt/grc721/v0.TokenID)', want: "" },
+    {
+      name: "a token id of a grc721 package at another path",
+      answer: '("12" gno.land/p/g17khqpukees4237dtn3astzapmp462vjhsz6st4/grc721/v0.TokenID)',
+      want: "12",
+    },
+    {
+      name: "an empty token id of a grc721 package at another path",
+      answer: '("" gno.land/p/g17khqpukees4237dtn3astzapmp462vjhsz6st4/grc721/v0.TokenID)',
+      want: "",
+    },
   ];
 
   for (const { name, answer, want } of cases) {
