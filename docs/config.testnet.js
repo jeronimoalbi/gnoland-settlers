@@ -16,10 +16,10 @@ export const config = {
   gnoweb: "https://pearl.testnets.gno.land",
 
   // The realm that keeps the Settlers on that testnet: it checks the proofs and mints the tokens.
-  realm: "gno.land/r/g17khqpukees4237dtn3astzapmp462vjhsz6st4/settlers/nft",
+  realm: "gno.land/r/g1dxrp4g8zw90lwsu4v2qqlqkpj7234mdvaayrwf/settlers/nft",
 
   // The realm that draws the picture of a Settler for an address, on that testnet.
-  avatarRealm: "gno.land/r/g17khqpukees4237dtn3astzapmp462vjhsz6st4/settlers/avatar",
+  avatarRealm: "gno.land/r/g1dxrp4g8zw90lwsu4v2qqlqkpj7234mdvaayrwf/settlers/avatar",
 
   // The list of eligible addresses for that testnet, next to this page. The page does not trust it: it
   // checks it against the root that is stored in the realm there.
