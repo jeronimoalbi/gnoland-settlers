@@ -31,7 +31,8 @@ func main(cur realm) {
 	testing.SetRealm(testing.NewUserRealm(alice))
 	id := settlers.Mint(cross(cur), aliceProof)
 
-	println("Minted gnome, packed:", nft.Pack(settlers.TraitsOf(id)))
+	traits, _ := settlers.TraitsOf(id)
+	println("Minted gnome, packed:", nft.Pack(traits))
 	println("Gnome marked seen, packed:", nft.Pack(candidate.Normalized()))
 }
 

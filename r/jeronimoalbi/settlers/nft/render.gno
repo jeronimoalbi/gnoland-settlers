@@ -6,6 +6,7 @@ import (
 	"gno.land/p/jeronimoalbi/settlers/nft/v0"
 	"gno.land/p/moul/md/v0"
 	"gno.land/p/moul/mdtable/v0"
+	"gno.land/p/nt/grc721/v0"
 	"gno.land/p/nt/markdown/sanitize/v0"
 	"gno.land/p/nt/mdalert/v0"
 	"gno.land/p/nt/mux/v0"
@@ -67,7 +68,7 @@ func renderHome(res *mux.ResponseWriter, _ *mux.Request) {
 	})
 	res.Write(pathsTable.String() + "\n")
 
-	minted := TotalSupply()
+	minted := tokens.Size()
 	if len(root) == 0 {
 		res.Write(md.Paragraph("The mint is not open yet."))
 	} else {
@@ -91,7 +92,7 @@ func renderHome(res *mux.ResponseWriter, _ *mux.Request) {
 		res.Write(md.H2("Last Settlers"))
 		tokens.ReverseIterateByOffset(0, galleryLen, func(key string, value any) bool {
 			settlerID, _ := strconv.Atoi(key)
-			img := image(settlerID, nft.Unpack(value.(token).traits), galleryWidth)
+			img := image(settlerID, nft.Unpack(value.(uint32)), galleryWidth)
 			res.Write("[" + img + "](" + tokenPath(settlerID) + ") ")
 			return false
 		})
@@ -102,19 +103,21 @@ func renderHome(res *mux.ResponseWriter, _ *mux.Request) {
 }
 
 func renderToken(res *mux.ResponseWriter, req *mux.Request) {
-	rawSettlerID := req.GetVar("id")
-	settlerID, err := strconv.Atoi(rawSettlerID)
-	if err != nil || settlerID < 1 || settlerID > TotalSupply() {
+	tid := grc721.TokenID(req.GetVar("id"))
+	settlerID, _ := parseTokenID(tid)
+	packed, ok := traitsOf(tid)
+	if !ok {
 		res.Write(md.Paragraph("Settler not found."))
 		res.Write(md.Paragraph(backHomeLink()))
 		return
 	}
 
 	res.Write(md.H1(settlerName(settlerID)))
-	t := TraitsOf(settlerID)
+	t := nft.Unpack(packed)
 	res.Write(image(settlerID, t, detailWidth) + "\n\n")
 
-	owner := OwnerOf(settlerID).String()
+	ownerAddr, _ := OwnerOf(tid)
+	owner := ownerAddr.String()
 	res.Write(md.Paragraph(
 		"Owner: " + md.Link(owner, RealmPath+":addr/"+owner) +
 			" · soulbound, it can't be transferred",
@@ -138,15 +141,17 @@ func renderAddr(res *mux.ResponseWriter, req *mux.Request) {
 		return
 	}
 
-	settlerID := TokenOf(address(addr))
-	if settlerID == 0 {
+	tid := TokenOf(address(addr))
+	if tid == "" {
 		res.Write(md.H1("Settler of " + md.InlineCode(addr)))
 		res.Write(md.Paragraph("This account has not minted a Settler."))
 		res.Write(md.Paragraph(backHomeLink()))
 		return
 	}
 
-	img := image(settlerID, TraitsOf(settlerID), detailWidth)
+	settlerID, _ := parseTokenID(tid)
+	packed, _ := traitsOf(tid)
+	img := image(settlerID, nft.Unpack(packed), detailWidth)
 	res.Write(md.H1("Settler of " + md.InlineCode(addr)))
 	res.Write("[" + img + "](" + tokenPath(settlerID) + ")\n\n")
 	res.Write(md.Paragraph(backHomeLink()))

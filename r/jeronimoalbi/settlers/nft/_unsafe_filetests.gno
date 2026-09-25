@@ -14,6 +14,7 @@ func UnsafeReset(cur realm, owner address) {
 
 	root = nil
 	total = 0
+	collection, ledger = newCollection(cur)
 	tokens = bptree.NewBPTree32()
 	claimed = bptree.NewBPTree32()
 	seenTraits = newTraitsFilter()

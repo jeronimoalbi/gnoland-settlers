@@ -5,6 +5,7 @@ import (
 
 	"gno.land/p/moul/md/v0"
 	"gno.land/p/moul/mdtable/v0"
+	"gno.land/p/nt/grc721/v0"
 	"gno.land/p/nt/mdalert/v0"
 	"gno.land/p/nt/mux/v0"
 	settlers "gno.land/r/jeronimoalbi/settlers/nft"
@@ -112,8 +113,13 @@ func renderHome(res *mux.ResponseWriter, _ *mux.Request) {
 		res.Write(md.H2("Last Settlers"))
 
 		for id := n; id > 0 && id > n-samples; id-- {
-			owner := settlers.OwnerOf(id)
-			tokenPath := settlers.RealmPath + ":token/" + strconv.Itoa(id)
+			tid := grc721.TokenID(strconv.FormatInt(id, 10))
+			owner, err := settlers.OwnerOf(tid)
+			if err != nil {
+				continue
+			}
+
+			tokenPath := settlers.RealmPath + ":token/" + string(tid)
 			table := mdtable.Table{Headers: []string{"", ""}}
 			table.Append([]string{
 				Markdown(owner, sampleSize, false),

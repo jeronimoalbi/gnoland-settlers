@@ -37,7 +37,7 @@ func main(cur realm) {
 	testing.SetRealm(testing.NewUserRealm(alice))
 	id := settlers.Mint(cross(cur), aliceProof)
 
-	traits := settlers.TraitsOf(id)
+	traits, _ := settlers.TraitsOf(id)
 	println("Hat shape:", traits.HatShape)
 	println("Flip:", traits.Flip)
 }

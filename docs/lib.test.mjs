@@ -156,6 +156,9 @@ test("ParseEval", () => {
     { name: "a number", answer: "(12 int)", want: 12 },
     { name: "zero", answer: "(0 int)", want: 0 },
     { name: "with a line break at the end", answer: "(3000 int)\n", want: 3000 },
+    { name: "a 64-bit number", answer: "(12 int64)", want: 12 },
+    { name: "a token id", answer: '("12" gno.land/p/nt/grc721/v0.TokenID)', want: "12" },
+    { name: "an empty token id", answer: '("" gno.land/p/nt/grc721/v0.TokenID)', want: "" },
   ];
 
   for (const { name, answer, want } of cases) {
@@ -168,7 +171,7 @@ test("ParseEval", () => {
 });
 
 test("ParseEvalRejectsOtherAnswers", () => {
-  for (const answer of ["", "abc", "(true bool)", "12"]) {
+  for (const answer of ["", "abc", "(true bool)", "12", '("12" gno.land/r/evil.TokenID)']) {
     // Act
     const parse = () => parseEval(answer);
 

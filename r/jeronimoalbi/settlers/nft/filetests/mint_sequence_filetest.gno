@@ -41,13 +41,16 @@ func main(cur realm) {
 		id := settlers.Mint(cross(cur), account.proof)
 		println("Account", i, "minted id:", id)
 
-		seenGnomes[settlers.TraitsOf(id)] = true
+		traits, _ := settlers.TraitsOf(id)
+		seenGnomes[traits] = true
 	}
 
 	// alice is accounts[3], so she is the 4th to mint and gets token id 4.
 	println("Total supply:", settlers.TotalSupply())
-	println("Owner of alice's token:", settlers.OwnerOf(settlers.TokenOf(alice)).String())
-	println("Balance of alice:", settlers.BalanceOf(alice))
+	owner, _ := settlers.OwnerOf(settlers.TokenOf(alice))
+	balance, _ := settlers.BalanceOf(alice)
+	println("Owner of alice's token:", owner.String())
+	println("Balance of alice:", balance)
 	println("Token of alice:", settlers.TokenOf(alice))
 	println("Unique gnomes out of", len(accounts), "accounts:", len(seenGnomes))
 }

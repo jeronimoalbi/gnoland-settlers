@@ -26,7 +26,8 @@ func main(cur realm) {
 	testing.SetRealm(testing.NewUserRealm(alice))
 	id := settlers.Mint(cross(cur), aliceProof)
 
-	packed := nft.Pack(settlers.TraitsOf(id))
+	traits, _ := settlers.TraitsOf(id)
+	packed := nft.Pack(traits)
 	println("The filter has the gnome:", settlers.UnsafeSeenContains(packed))
 }
 

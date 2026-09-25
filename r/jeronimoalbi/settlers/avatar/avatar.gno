@@ -3,10 +3,10 @@ package avatar
 import (
 	"chain"
 	"chain/runtime"
-	"strconv"
 	"strings"
 
 	"gno.land/p/jeronimoalbi/settlers/nft/v0"
+	"gno.land/p/nt/grc721/v0"
 	"gno.land/p/nt/mdalert/v0"
 	"gno.land/p/nt/ownable/v0"
 	settlers "gno.land/r/jeronimoalbi/settlers/nft"
@@ -94,7 +94,7 @@ func ClearNotice(cur realm) {
 // every art pixel as a whole number of screen pixels). A size of 0 or less leaves out the width and the
 // height, so that the image scales to its container. If transparent is true, the image has no background.
 func SVG(addr address, size int, transparent bool) string {
-	if settlerID, traits := lookup(addr); settlerID != -1 {
+	if tid, traits := lookup(addr); tid != "" {
 		return nft.RenderSVG(traits, options(size, transparent))
 	}
 	return ""
@@ -104,7 +104,7 @@ func SVG(addr address, size int, transparent bool) string {
 // be used as the source of an image or as the address of a Markdown image, or an empty text if it has none.
 // The size and transparent are the same as in SVG.
 func URI(addr address, size int, transparent bool) string {
-	if settlerID, traits := lookup(addr); settlerID != -1 {
+	if tid, traits := lookup(addr); tid != "" {
 		return nft.RenderDataURI(traits, options(size, transparent))
 	}
 	return ""
@@ -116,22 +116,26 @@ func URI(addr address, size int, transparent bool) string {
 //
 // The size and transparent are the same as in SVG.
 func Markdown(addr address, size int, transparent bool) string {
-	if settlerID, traits := lookup(addr); settlerID != -1 {
+	if tid, traits := lookup(addr); tid != "" {
 		uri := nft.RenderDataURI(traits, options(size, transparent))
-		return "![Settler #" + strconv.Itoa(settlerID) + "](" + uri + ")"
+		return "![Settler #" + string(tid) + "](" + uri + ")"
 	}
 	return ""
 }
 
-// lookup returns the ID and traits of the Settler of an address, or -1 and a zero-value Traits if it has none.
-func lookup(addr address) (int, nft.Traits) {
-	settlerID := settlers.TokenOf(addr)
-	if settlerID == 0 {
-		return -1, nft.Traits{}
+// lookup returns the ID and traits of the Settler of an address, or an empty ID and a zero-value Traits if it
+// has none.
+func lookup(addr address) (grc721.TokenID, nft.Traits) {
+	tid := settlers.TokenOf(addr)
+	if tid == "" {
+		return "", nft.Traits{}
 	}
 
-	traits := settlers.TraitsOf(settlerID)
-	return settlerID, traits
+	traits, err := settlers.TraitsOf(tid)
+	if err != nil {
+		return "", nft.Traits{}
+	}
+	return tid, traits
 }
 
 // options builds the nft.Options for an image; size is clamped between MinSize and MaxSize (0 or less is

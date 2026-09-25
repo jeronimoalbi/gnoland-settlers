@@ -6,6 +6,7 @@ import (
 	"crypto/merkle"
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"strconv"
 	"strings"
 	"time"
@@ -13,6 +14,7 @@ import (
 	"gno.land/p/jeronimoalbi/bloom/v0"
 	"gno.land/p/jeronimoalbi/settlers/nft/v0"
 	"gno.land/p/nt/bptree/v0"
+	"gno.land/p/nt/grc721/v0"
 	"gno.land/p/nt/mdalert/v0"
 	"gno.land/p/nt/ownable/v0"
 )
@@ -34,6 +36,9 @@ const (
 	// Max aunts is the longest proof accepted.
 	maxAunts = 40
 )
+
+// ErrSoulbound is returned for operation that are not allowed on a soulbound NFT.
+var ErrSoulbound = errors.New("settlers are soulbound, they can't be transferred or approved")
 
 var (
 	// Realm path is the path of this realm.
@@ -62,7 +67,13 @@ var (
 	// Total is the total number of leaves of the list of elegible accounts.
 	total int
 
-	// Tokens has every token, by ID (zero-padded, so it is in mint order).
+	// Collection is the GRC721 token, it keeps the owners and balances and emits the standard events.
+	collection *grc721.Token
+
+	// Ledger is the writable side of the collection, only used to mint.
+	ledger *grc721.PrivateLedger
+
+	// Tokens has the packed traits of every token, by ID (zero-padded, so it is in mint order).
 	tokens = bptree.NewBPTree32()
 
 	// Claimed has the ID of the token for each account.
@@ -72,23 +83,27 @@ var (
 	seenTraits = newTraitsFilter()
 )
 
-// Token represents a Settler.
-type token struct {
-	owner  address
-	traits uint32
-}
-
 func init(cur realm) {
 	RealmPath = strings.TrimPrefix(cur.PkgPath(), runtime.ChainDomain())
 	admin = ownable.NewWithAddress(cur.Previous().Address())
+	collection, ledger = newCollection(cur)
+}
 
-	// Announce the new collection
-	chain.Emit(
-		"NewToken",
-		"token", CollectionID(),
-		"name", Name,
-		"symbol", Symbol,
-	)
+// Soulbound is a GRC721 extension that aborts any transfer of a Settler.
+// The realm never exposes a teller that can write, so a transfer can't be started,
+// this makes sure that it could never finish either.
+type soulbound struct{}
+
+func (soulbound) ExtensionKind() string                       { return "soulbound" }
+func (soulbound) OnMint(address, grc721.TokenID)              {}
+func (soulbound) OnTransfer(address, address, grc721.TokenID) { panic(ErrSoulbound) }
+func (soulbound) OnBurn(grc721.TokenID)                       {}
+
+// newCollection creates the GRC721 token of the Settlers.
+func newCollection(cur realm) (*grc721.Token, *grc721.PrivateLedger) {
+	tok, led := grc721.NewToken(Name, Symbol, 0, cur)
+	led.RegisterExtension(soulbound{})
+	return tok, led
 }
 
 // SetSnapshot opens the mint.
@@ -154,12 +169,12 @@ func ClearNotice(cur realm) {
 	chain.Emit("NoticeCleared")
 }
 
-// Mint mints a Settler to the caller and returns its id.
+// Mint mints a Settler to the caller and returns its ID.
 //
 // The proof shows that the caller is in the list of eligible accounts.
 // Proof format is "<index>.<aunts>".
 // Only user accounts can mint, either with a call or a run transaction, realms can't.
-func Mint(cur realm, proof string) int {
+func Mint(cur realm, proof string) grc721.TokenID {
 	assertIsCurrent(cur)
 	if !cur.Previous().IsUser() {
 		panic("only user accounts can mint")
@@ -209,24 +224,19 @@ func Mint(cur realm, proof string) int {
 		}
 	}
 
-	tokens.Set(makeKey(settlerID), token{owner: caller, traits: packed})
+	tid := tokenID(settlerID)
+	if err := ledger.Mint(caller, tid); err != nil {
+		panic(err)
+	}
+
+	tokens.Set(makeKey(settlerID), packed)
 	seenTraits.AddString(packedKey)
-	claimed.Set(caller.String(), settlerID)
-	chain.Emit(
-		"Transfer",
-		"token", CollectionID(),
-		"from", "",
-		"to", caller.String(),
-		"tokenId", strconv.Itoa(settlerID),
-	)
-	return settlerID
+	claimed.Set(caller.String(), tid)
+	return tid
 }
 
 // Cap returns the number of Settlers that can be minted.
 func Cap() int { return supplyCap }
-
-// TotalSupply returns the number of Settlers minted so far.
-func TotalSupply() int { return tokens.Size() }
 
 // MerkleRoot returns the Merkle root of the list of eligible accounts, in hex.
 func MerkleRoot() string { return hex.EncodeToString(root) }
@@ -234,40 +244,50 @@ func MerkleRoot() string { return hex.EncodeToString(root) }
 // Total returns the number of eligible accounts in the list.
 func Total() int { return total }
 
-// CollectionID returns the ID that the events use for this collection.
-func CollectionID() string {
-	return runtime.ChainDomain() + RealmPath + "." + Symbol + ".0000000"
-}
-
-// OwnerOf returns the owner account of a Settler.
-func OwnerOf(settlerID int) address { return tokenOf(settlerID).owner }
-
-// BalanceOf returns the number of Settlers of an account (0 or 1).
-func BalanceOf(addr address) int {
-	if claimed.Has(addr.String()) {
-		return 1
-	}
-	return 0
-}
-
-// TokenOf returns the ID of the Settler of an account, or 0 if it has none.
-func TokenOf(addr address) int {
+// TokenOf returns the ID of the Settler of an account, or an empty ID if it has none.
+func TokenOf(addr address) grc721.TokenID {
 	v := claimed.Get(addr.String())
 	if v == nil {
-		return 0
+		return ""
 	}
-	return v.(int)
+	return v.(grc721.TokenID)
 }
 
 // TraitsOf returns the traits of a Settler.
-func TraitsOf(settlerID int) nft.Traits { return nft.Unpack(tokenOf(settlerID).traits) }
+func TraitsOf(tid grc721.TokenID) (nft.Traits, error) {
+	packed, ok := traitsOf(tid)
+	if !ok {
+		return nft.Traits{}, grc721.ErrInvalidTokenId
+	}
+	return nft.Unpack(packed), nil
+}
 
-func tokenOf(settlerID int) token {
+// traitsOf returns the packed traits of a Settler, or false if the ID is not a minted Settler.
+func traitsOf(tid grc721.TokenID) (uint32, bool) {
+	settlerID, ok := parseTokenID(tid)
+	if !ok {
+		return 0, false
+	}
+
 	v := tokens.Get(makeKey(settlerID))
 	if v == nil {
-		panic("token not found")
+		return 0, false
 	}
-	return v.(token)
+	return v.(uint32), true
+}
+
+// tokenID returns the GRC721 ID of a Settler number.
+func tokenID(settlerID int) grc721.TokenID {
+	return grc721.TokenID(strconv.Itoa(settlerID))
+}
+
+// parseTokenID returns the Settler number of an ID, only for the canonical form ("1", not "01" or "+1").
+func parseTokenID(tid grc721.TokenID) (int, bool) {
+	settlerID, err := strconv.Atoi(string(tid))
+	if err != nil || settlerID < 1 || strconv.Itoa(settlerID) != string(tid) {
+		return 0, false
+	}
+	return settlerID, true
 }
 
 func newTraitsFilter() *bloom.Bloom {

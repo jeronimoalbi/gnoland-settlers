@@ -145,14 +145,15 @@ export function isAddress(text) {
 
 /**
  * Reads the answer of the chain to a call to a function of a realm ("vm/qeval"). The chain answers with
- * the value and its type in brackets, like `("abc" string)` or `(12 int)`.
+ * the value and its type in brackets, like `("abc" string)`, `(12 int)` or `(12 int64)`. A GRC721 token ID is
+ * a text with its own type, like `("12" gno.land/p/nt/grc721/v0.TokenID)`.
  *
  * @returns {string|number} the text or the number
  */
 export function parseEval(answer) {
-  const match = /^\((.*) (string|int)\)$/s.exec(answer.trim());
+  const match = /^\((.*) (string|int|int64|gno\.land\/p\/nt\/grc721\/v0\.TokenID)\)$/s.exec(answer.trim());
   if (!match) throw new Error("unexpected answer from the chain: " + answer);
-  return match[2] === "int" ? Number(match[1]) : JSON.parse(match[1]);
+  return match[2] === "int" || match[2] === "int64" ? Number(match[1]) : JSON.parse(match[1]);
 }
 
 /**

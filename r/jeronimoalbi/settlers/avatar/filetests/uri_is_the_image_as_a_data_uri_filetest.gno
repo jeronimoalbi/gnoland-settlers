@@ -26,7 +26,7 @@ func main(cur realm) {
 	testing.SetRealm(testing.NewUserRealm(alice))
 	id := settlers.Mint(cross(cur), aliceProof)
 
-	traits := settlers.TraitsOf(id)
+	traits, _ := settlers.TraitsOf(id)
 	println("Avatar URI:     ", avatar.URI(alice, 64, true))
 	println("Art package URI:", nft.RenderDataURI(traits, nft.Options{Size: 64, NoBackground: true}))
 }

@@ -42,4 +42,4 @@ func main(cur realm) {
 // Output:
 // Abort: sold out
 // Total supply: 1
-// Token of alice: 0
+// Token of alice:

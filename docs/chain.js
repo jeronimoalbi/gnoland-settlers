@@ -66,12 +66,14 @@ export async function readCollection(config) {
 }
 
 /**
- * The id of the Settler of an address, or 0 if it has none.
+ * The id of the Settler of an address, as a number, or 0 if it has none (the realm answers with an empty
+ * GRC721 token ID).
  * The address is checked first: it is put inside the question, so only a real address is allowed in it.
  */
 export async function tokenOf(config, address) {
   if (!isAddress(address)) throw new Error("not an address");
-  return evaluate(config, `TokenOf("${address}")`);
+  const id = await evaluate(config, `TokenOf("${address}")`);
+  return id === "" ? 0 : Number(id);
 }
 
 /**
