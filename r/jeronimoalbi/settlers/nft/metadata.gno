@@ -7,11 +7,21 @@ import (
 	"gno.land/p/nt/grc721/v0"
 )
 
-// TokenURI returns a JSON string with the metadata of a Settler (OpenSea style).
-// The `image` is the gnome SVG, encoded in a data URI, and the `external_url` is
-// the page of this realm that shows the token, so that an app that lists a Settler
-// can link back to the realm.
+// TokenURI returns the Settler image as an SVG data URI.
+// Wallets such as Adena read TokenURI directly as the token image,
+// so this must be the image itself. The metadata lives in TokenMetadata.
 func TokenURI(tid grc721.TokenID) (string, error) {
+	traits, err := TraitsOf(tid)
+	if err != nil {
+		return "", err
+	}
+
+	return nft.RenderDataURI(traits, nft.Options{Size: nft.CanonicalSize}), nil
+}
+
+// TokenMetadata returns a JSON string with the metadata of a Settler
+// in the format the Adena wallet can understand.
+func TokenMetadata(tid grc721.TokenID) (string, error) {
 	traits, err := TraitsOf(tid)
 	if err != nil {
 		return "", err
@@ -23,13 +33,13 @@ func TokenURI(tid grc721.TokenID) (string, error) {
 			attrs += ","
 		}
 
-		attrs += `{"trait_type":"` + attr.Type + `","value":"` + attr.Value + `"}`
+		attrs += `{"traitType":"` + attr.Type + `","value":"` + attr.Value + `"}`
 	}
 
 	return `{"name":"Settler #` + string(tid) + `",` +
 		`"description":"Soulbound gnome of the early settlers of Gno.land. ` + nft.Credits + `",` +
 		`"image":"` + nft.RenderDataURI(traits, nft.Options{Size: nft.CanonicalSize}) + `",` +
-		`"external_url":"` + ExternalURL(tid) + `",` +
+		`"externalUrl":"` + ExternalURL(tid) + `",` +
 		`"attributes":[` + attrs + `]}`, nil
 }
 
